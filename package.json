@@ -1,0 +1,28 @@
+{
+  "name": "galaxy-stations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "start:dev": "tsx watch src/server.ts",
+    "build": "tsup src/server.ts",
+    "test": "vitest"
+  },
+  "author": "Paulo Uilian",
+  "license": "ISC",
+  "devDependencies": {
+    "@graphql-tools/graphql-file-loader": "^8.0.0",
+    "@graphql-tools/load": "^8.0.0",
+    "tsup": "^7.2.0",
+    "tsx": "^3.13.0",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.9.4",
+    "crypto": "^1.0.1",
+    "graphql": "^16.8.1"
+  }
+}

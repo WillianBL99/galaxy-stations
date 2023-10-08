@@ -1,0 +1,17 @@
+# schema.gql
+type Author {
+    id: ID!
+    name: String
+    books: [Book]
+}
+
+type Book {
+    title: String
+    author: Author
+}
+
+type Query {
+    author(id: ID!): Author
+    books: [Book]
+    authors: [Author]
+}
