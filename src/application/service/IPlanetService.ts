@@ -1,10 +1,9 @@
 import { UUID } from "crypto";
 import { IPlanet } from "../entity/Planet";
-
 interface IPlanetService {
-    list(id: UUID): Promise<IPlanet>
-    getById(id: UUID): Promise<IPlanet>
-    getByName(name: string): Promise<IPlanet>
+    list(pagination: Pagination): Promise<IPlanet[]>
+    getById(id: UUID): Promise<IPlanet | null>
+    getByName(name: string): Promise<IPlanet | null>
     update(planet: IPlanet): Promise<IPlanet>
 }
 

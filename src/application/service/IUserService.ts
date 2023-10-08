@@ -3,9 +3,8 @@ import { IUser } from "../entity/User";
 
 interface IUserService {
     create(user: IUser): Promise<IUser>
-    list(id: UUID): Promise<IUser>
-    getById(id: UUID): Promise<IUser>
-    getByEmail(email: string): Promise<IUser>
+    getById(id: UUID): Promise<IUser | null>
+    getByEmail(email: string): Promise<IUser | null>
 }
 
 export { IUserService }
