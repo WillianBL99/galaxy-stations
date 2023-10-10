@@ -1,3 +1,4 @@
 node_modules
 dist
-src/**/*.spec.ts
+src/test/coverage
+.vscode
