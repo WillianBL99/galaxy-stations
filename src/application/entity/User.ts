@@ -1,21 +1,21 @@
-import { randomUUID } from "crypto"
+import { UUID, randomUUID } from "crypto"
 
 interface IUser extends IBase {
-    id: string
+    id: UUID
     name: string
     email: string
     password: string
 }
 
 interface UserData extends BaseData {
-    id?: string,
+    id?: UUID,
     name: string,
     email: string,
     password: string
 }
 
 class User implements IUser {
-    readonly id: string
+    readonly id: UUID
     name: string
     email: string
     password: string

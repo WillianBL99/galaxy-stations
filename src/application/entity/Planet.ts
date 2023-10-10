@@ -1,21 +1,21 @@
-import { randomUUID } from "crypto"
+import { UUID, randomUUID } from "crypto"
 
 interface IPlanet extends IBase {
-    id: string
+    id: UUID
     name: string
     checkedAt: Date
     hasStation: boolean
 }
 
 interface PlanetData extends BaseData {
-    id?: string,
+    id?: UUID,
     name: string,
     checkedAt?: Date
     hasStation: boolean,
 }
 
 class Planet implements IPlanet {
-    readonly id: string
+    readonly id: UUID
     name: string
     hasStation: boolean
     checkedAt: Date
