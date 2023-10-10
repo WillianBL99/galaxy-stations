@@ -1,14 +1,15 @@
 import { IPlanetService } from "../service/IPlanetService";
-import { IPlanet, PlanetData } from "../entity/Planet";
+import { IPlanet } from "../entity/Planet";
 import { UUID } from "crypto";
-import { } from "jsonwebtoken"
+import { IPagination } from "../utils/Type";
+import { appErrors } from "../../error/Errors";
 
 type PlanetResponse = Omit<IPlanet, "deletedAt">
 
 export class PlanetUseCase {
     constructor(private readonly planetService: IPlanetService) { }
 
-    private parsePlanet(Planet: IPlanet): PlanetResponse {
+    protected static parsePlanet(Planet: IPlanet): PlanetResponse {
         return {
             id: Planet.id,
             name: Planet.name,
@@ -19,48 +20,37 @@ export class PlanetUseCase {
         }
     }
 
-    async list(pagination: Pagination): Promise<PlanetResponse[]> {
-        try {
-            const planets = await this.planetService.list(pagination)
-            return planets.map(this.parsePlanet)
-        } catch (error) {
-            console.log("Internal server error: ", error)
-        }
-        return [];
+    async list(pagination: IPagination): Promise<PlanetResponse[]> {
+        const planets = await this.planetService.list(pagination)
+        return planets.map(PlanetUseCase.parsePlanet)
     }
 
     async getByName(name: string): Promise<PlanetResponse | null> {
-        try {
-            const planet = await this.planetService.getByName(name)
-            return planet
-        } catch (error) {
-            console.log("Internal server error: ", error)            
+        const planet = await this.planetService.getByName(name)
+        if (!planet) {
+            throw new Error(appErrors.planetNotFound)
         }
-        return null
+        return planet
     }
 
     async getById(id: UUID): Promise<PlanetResponse | null> {
-        try {
-            const planet = await this.planetService.getById(id)
-            return planet
-        } catch (error) {
-            console.log("Internal server error: ", error)            
+        const planet = await this.planetService.getById(id)
+        if (!planet) {
+            throw new Error(appErrors.planetNotFound)
         }
-        return null
+        return planet
     }
 
-    async updateHasStation(planetId: UUID, hasStation: boolean): Promise<PlanetResponse | null> {
-        try {
-            const planet = await this.planetService.getById(planetId)
-            if (!planet) {
-                throw new Error(`Planet ${planetId} not found`)
-            }
-            planet.hasStation = hasStation
-            const planetResponse = await this.planetService.update(planet)
-            return this.parsePlanet(planetResponse)
-        } catch (error) {
-            console.log("Internal server error: ", error) 
+    async updateHasStation(planetId: UUID, hasStation: boolean): Promise<PlanetResponse> {
+        const planet = await this.planetService.getById(planetId)
+        if (!planet) {
+            throw new Error(appErrors.planetNotFound)
         }
-        return null
+        const planetResponse = await this.planetService.update({
+            ...planet,
+            hasStation: hasStation,
+            updatedAt: new Date()
+        })
+        return PlanetUseCase.parsePlanet(planetResponse)
     }
 }
