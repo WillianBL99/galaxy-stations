@@ -1,7 +1,7 @@
 import { UUID } from "crypto";
 import { IStation } from "../../application/entity/Station";
 import { IStationService } from "../../application/service/IStationService";
-import { IPagination } from "../../application/utils/Type";
+import { IPagination } from "../../utils/Type";
 
 export class StationServiceInMemory implements IStationService {
     stations: IStation[]

@@ -1,7 +1,7 @@
 import { UUID } from "crypto"
 import { IRecharge, Recharge, RechargeStatus } from "../../application/entity/Recharge"
 import { IRechargeService } from "../../application/service/IRechargeService"
-import { IPagination } from "../../application/utils/Type"
+import { IPagination } from "../../utils/Type"
 
 export class RechargeServiceInMemory implements IRechargeService {
     recharges: IRecharge[]

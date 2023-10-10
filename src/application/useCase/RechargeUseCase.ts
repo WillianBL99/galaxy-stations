@@ -3,8 +3,8 @@ import { IRecharge, Recharge, RechargeData } from "../entity/Recharge";
 import { UUID } from "crypto";
 import { IStationService } from "../service/IStationService";
 import { IUserService } from "../service/IUserService";
-import { IPagination, Pagination } from "../utils/Type";
-import { IAppConfig } from "../config/Config";
+import { IPagination, Pagination } from "../../utils/Type";
+import { IAppConfig } from "../../config/Config";
 import { appErrors } from "../../error/Errors";
 import { IStation } from "../entity/Station";
 

@@ -3,7 +3,7 @@ import { IStationService } from "../service/IStationService";
 import { IStation, Station } from "../entity/Station";
 import { UUID } from "crypto";
 import { appErrors } from "../../error/Errors";
-import { IPagination } from "../utils/Type";
+import { IPagination } from "../../utils/Type";
 
 type StationResponse = Omit<IStation, "deletedAt">
 

@@ -3,7 +3,7 @@ import { IUser, UserData, User } from "../entity/User";
 import { hashSync } from "bcrypt"
 import { UUID } from "crypto";
 import { appErrors } from "../../error/Errors";
-import { IEncryptor } from "../utils/Encryptor";
+import { IEncryptor } from "../../utils/Encryptor";
 
 type CreateUserRequest = Pick<UserData, "name" | "email" | "password">
 type UpdateUserRequest = Pick<IUser, "id" | "name" | "email">

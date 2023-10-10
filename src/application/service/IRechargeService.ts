@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
 import { IRecharge, RechargeStatus } from "../entity/Recharge";
-import { IPagination } from "../utils/Type";
+import { IPagination } from "../../utils/Type";
 
 interface IRechargeService {
     create(recharge: IRecharge): Promise<IRecharge>

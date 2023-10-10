@@ -1,7 +1,7 @@
 import { IPlanetService } from "../service/IPlanetService";
 import { IPlanet } from "../entity/Planet";
 import { UUID } from "crypto";
-import { IPagination } from "../utils/Type";
+import { IPagination } from "../../utils/Type";
 import { appErrors } from "../../error/Errors";
 
 type PlanetResponse = Omit<IPlanet, "deletedAt">

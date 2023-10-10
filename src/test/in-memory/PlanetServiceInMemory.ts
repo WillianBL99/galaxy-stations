@@ -1,7 +1,7 @@
 import { UUID } from "crypto"
 import { IPlanet, Planet } from "../../application/entity/Planet"
 import { IPlanetService } from "../../application/service/IPlanetService"
-import { IPagination } from "../../application/utils/Type"
+import { IPagination } from "../../utils/Type"
 
 export class PlanetServiceInMemory implements IPlanetService {
     planets: IPlanet[]

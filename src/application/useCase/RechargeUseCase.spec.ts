@@ -3,7 +3,7 @@ import { RechargeServiceInMemory } from "../../test/in-memory/RechargeServiceInM
 import { RechargeUseCase } from "./RechargeUseCase"
 import { StationServiceInMemory } from "../../test/in-memory/StationServiceInMemory"
 import { UserServiceInMemory } from "../../test/in-memory/UserServiceInMemory"
-import { IAppConfig } from "../config/Config"
+import { IAppConfig } from "../../config/Config"
 import { IUser } from "../entity/User"
 import { UserFactory } from "../../test/factory/UserFactory"
 import { UUID, randomUUID } from "crypto"
@@ -12,7 +12,7 @@ import { StationFactory } from "../../test/factory/StationFactory"
 import { appErrors } from "../../error/Errors"
 import { IRecharge, Recharge } from "../entity/Recharge"
 import { RechargeFactory } from "../../test/factory/RechargeFactory"
-import { Pagination } from "../utils/Type"
+import { Pagination } from "../../utils/Type"
 
 class Config implements IAppConfig {
     pricePerMinute: number

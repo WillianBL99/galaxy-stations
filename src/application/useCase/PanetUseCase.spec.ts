@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { PlanetServiceInMemory } from "../../test/in-memory/PlanetServiceInMemory";
 import { PlanetFactory } from "../../test/factory/PlanetFactory";
-import { Pagination } from "../utils/Type";
+import { Pagination } from "../../utils/Type";
 import { randomUUID } from "crypto";
 import { PlanetUseCase } from "./PlanetUseCase";
 import { appErrors } from "../../error/Errors";

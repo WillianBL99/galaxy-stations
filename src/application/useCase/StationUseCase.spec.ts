@@ -7,7 +7,7 @@ import { PlanetFactory } from "../../test/factory/PlanetFactory";
 import { StationFactory } from "../../test/factory/StationFactory";
 import { appErrors } from "../../error/Errors";
 import { IStation } from "../entity/Station";
-import { Pagination } from "../utils/Type";
+import { Pagination } from "../../utils/Type";
 import { randomUUID } from "crypto";
 
 class ProtectedMetods extends StationUseCase {

@@ -4,7 +4,7 @@ import { UserServiceInMemory } from "../../test/in-memory/UserServiceInMemory";
 import { UserUseCase } from "./UserUseCase";
 import { expect } from "vitest";
 import { appErrors } from "../../error/Errors";
-import { IEncryptor } from "../utils/Encryptor";
+import { IEncryptor } from "../../utils/Encryptor";
 
 class Encryptor implements IEncryptor {
     hasResult: string
