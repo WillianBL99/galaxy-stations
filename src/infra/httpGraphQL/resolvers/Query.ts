@@ -1,12 +1,22 @@
-import { App } from "../../../application";
-import { Pagination } from "../../../utils/Type";
+import { AppController } from "../../../application/controller";
+import { IPagination, Pagination } from "../../../utils/Type";
 
+type GQLPagination = {
+    pagination: Omit<IPagination, "active">
+}
 export class QueryResolver {
-    constructor(private readonly app: App) { }
+    constructor(private readonly appController: AppController) { }
     content() {
-        const suitablePlanets = () => {
+        const suitablePlanets = (_: any, gqlP: GQLPagination) => {
+            const { page, offset } = gqlP.pagination
             const pagination = new Pagination({ active: false });
-            return this.app.controller.planet.suitablePlanets(pagination);
+            if (page >= 0) {
+                pagination.activate(page, offset)
+            }
+            return this.appController.planet.suitablePlanets(pagination);
+        }
+        const stations = () => {
+
         }
         return {
             suitablePlanets

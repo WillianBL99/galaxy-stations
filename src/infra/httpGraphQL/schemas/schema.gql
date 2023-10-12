@@ -1,3 +1,8 @@
+input PaginationArgs {
+    page: Int = -1
+    offset: Int = 10
+}
+
 type Planet {
     id: ID!
     name: String!
@@ -21,6 +26,12 @@ type Station {
     createdAt: String!
     updatedAt: String
 }
+
+# type StationHistory {
+#     time: String,
+#     duration: String,
+#     user: User!
+# }
 
 input RechargeArgs {
     stationId: String!
@@ -46,10 +57,24 @@ type Recharge {
 }
 
 type Query {
-    suitablePlanets: [Planet!]!
+    suitablePlanets(pagination: PaginationArgs ): [Planet!]!
+    stations: [Station!]!
+    # stationHistory: Station!
 }
+
+# type Reservation {
+#     reservationId: String
+# }
+
+# input ReservationArgs {
+#     stationId: String!
+#     userId: String!
+#     startTime: String!
+#     endTime: String!
+# }
 
 type Mutation {
     instalStation(input: InstallStationArgs): Station
     recharge(input: RechargeArgs): Recharge
+    # reservation(input: ReservationArgs): ReservationId 
 }

@@ -10,7 +10,7 @@ export class Resolvers {
     content() {
         return {
             Planet,
-            Query: new QueryResolver(this.app).content()
+            Query: new QueryResolver(this.app.controller).content()
         }
     }
 }
