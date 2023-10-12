@@ -1,6 +1,7 @@
 import { User, PrismaClient } from "@prisma/client";
 import { IUser } from "../../../application/entity/User";
 import { IUserService } from "../../../application/service/IUserService";
+import { AppError } from "../../../error/Errors";
 
 
 export class UserPrismaService implements IUserService {
@@ -33,7 +34,7 @@ export class UserPrismaService implements IUserService {
             })
             return this.parserData(createdUser)
         } catch (error) {
-            throw new Error("Prisma - User: " + error)
+            AppError.throw("internalError")
         }
     }
 
@@ -47,7 +48,7 @@ export class UserPrismaService implements IUserService {
             }
             return null
         } catch (error) {
-            throw new Error("Prisma - User: " + error)
+            AppError.throw("internalError")
         }
     }
 
@@ -61,7 +62,7 @@ export class UserPrismaService implements IUserService {
             }
             return null
         } catch (error) {
-            throw new Error("Prisma - User: " + error)
+            AppError.throw("internalError")
         }
     }
 

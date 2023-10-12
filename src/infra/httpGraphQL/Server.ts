@@ -5,7 +5,8 @@ import { startStandaloneServer } from "@apollo/server/standalone"
 import { Resolvers } from "./resolvers"
 import { App } from "../../application"
 import { IUser } from "../../application/entity/User"
-import { AuthContext, AuthContext } from "./context/AuthContext"
+import { AuthContext } from "./context/AuthContext"
+import { AppError } from "../../error/Errors"
 
 export type MyContext = {
     headers: {
@@ -22,12 +23,23 @@ export class GraphQLServer {
             loaders: [new GraphQLFileLoader()],
         });
 
-        const auth = new AuthContext(this.app.controller.user, "secret")
+        const auth = new AuthContext(this.app.controller.user)
         const resolvers = new Resolvers(auth, this.app).content();
 
         this.server = new ApolloServer<MyContext>({
             typeDefs,
             resolvers,
+            formatError: (error) => {
+                const customError = AppError.errors[error.message]
+                const code = error?.extensions?.code
+                return {
+                    message: customError?.message || error.message,
+                    status: customError?.status,
+                    extensions: {
+                        code: code == "INTERNAL_SERVER_ERROR" ? undefined : code,
+                    },
+                };
+            },
         });
     }
 
@@ -39,7 +51,7 @@ export class GraphQLServer {
                 return {
                     headers: req.headers
                 }
-            }
+            },
         });
         console.log(`🚀  Server ready at: ${url}`);
     }

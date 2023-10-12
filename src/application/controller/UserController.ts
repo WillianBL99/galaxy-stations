@@ -4,6 +4,7 @@ import { TokenResponse } from "../../infra/httpGraphQL/context/AuthContext"
 import { Encryptor, IEncryptor } from "../../utils/Encryptor"
 import { IUser } from "../entity/User"
 import { CreateUserRequest, UserResponse, UserUseCase } from "../useCase/UserUseCase"
+import { AppError } from "../../error/Errors"
 
 type LoginUserData = Pick<IUser, "email" | "password">
 
@@ -28,10 +29,10 @@ export class UserController implements IUserController {
     async login({ email, password }: LoginUserData): Promise<TokenResponse> {
         const user = await this.userUseCase.getByEmail(email)
         if (!user) {
-            throw new Error(`Wrong email or password`)
+            AppError.throw("emailOrPasswordNotFound")
         }
         if (!this.encryptor.compare(password, user.password)) {
-            throw new Error(`Wrong email or password`)
+            AppError.throw("emailOrPasswordNotFound")
         }
         const authConfig = new AuthConfig()
         const token = jwt.sign({ userId: user.id }, authConfig.jwtSecret, {

@@ -21,7 +21,7 @@ export class StationServiceInMemory implements IStationService {
     async getByName(name: string): Promise<IStation | null> {
         return this.stations.find(station => station.name === name) || null
     }
-    async listByPlanet(planetId: pagination: IPagination): Promise<IStation[]> {
+    async listByPlanet(planetId: String, pagination: IPagination): Promise<IStation[]> {
         return this.stations.filter(station => station.planetId === planetId) || null
     }
     async update(planet: IStation): Promise<IStation> {
@@ -39,5 +39,5 @@ export class StationServiceInMemory implements IStationService {
         }
         return planet
     }
-    
+
 }

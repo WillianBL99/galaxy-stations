@@ -5,7 +5,7 @@ import { IStationService } from "../service/IStationService";
 import { IUserService } from "../service/IUserService";
 import { IPagination, Pagination } from "../../utils/Type";
 import { AppConfig } from "../../config/Config";
-import { appErrors } from "../../error/Errors";
+import { AppError } from "../../error/Errors";
 import { IStation } from "../entity/Station";
 
 export type CreateRechargeRequest = Pick<RechargeData, "endTime" | "stationId" | "userId">
@@ -36,7 +36,7 @@ export class RechargeUseCase {
     protected async handleReservationConflict(recharge: Recharge, stationId: string, userId: string, callback: () => any): Promise<void> {
         if (!RechargeUseCase.isAFutureTime(recharge.startTime, recharge.endTime)) {
             await callback()
-            throw new Error(appErrors.invalidEndTime)
+            AppError.throw("invalidEndTime")
         }
         const pagination = new Pagination({ active: false })
 
@@ -45,7 +45,7 @@ export class RechargeUseCase {
 
         if (this.conflictWithAnotherReservation(reservedRecharges, recharge.startTime, recharge.endTime)) {
             await callback()
-            throw new Error(appErrors.conflictTimeWithReservedCharge)
+            AppError.throw("conflictTimeWithReservedCharge")
         }
 
         const spendTime = recharge.endTime.getTime() - recharge.startTime.getTime()
@@ -69,16 +69,16 @@ export class RechargeUseCase {
     async recharge({ endTime, stationId, userId }: CreateRechargeRequest): Promise<RechargeResponse> {
         const user = await this.userService.getById(userId)
         if (!user) {
-            throw new Error(appErrors.userNotFound)
+            AppError.throw("userNotFound")
         }
         const station = await this.stationService.getById(stationId)
         if (!station) {
-            throw new Error(appErrors.stationNotFound)
+            AppError.throw("stationNotFound")
         }
         const usersSpacecraftCharging = await this.rechargeService
             .listByStatusAndUser("charging", userId, new Pagination({ active: false }))
         if (usersSpacecraftCharging.length) {
-            throw new Error(appErrors.UserAlreadyChargingASpacecraft)
+            AppError.throw("UserAlreadyChargingASpacecraft")
         }
 
         this.reserveStationForCharging(station)
@@ -104,7 +104,7 @@ export class RechargeUseCase {
 
     protected reserveStationForCharging(station: IStation): void {
         if (station.charging) {
-            throw new Error(appErrors.stationIsAlreadyCharging);
+            AppError.throw("stationIsAlreadyCharging")
         }
         this.stationService.update({ ...station, charging: true });
     }
@@ -116,7 +116,7 @@ export class RechargeUseCase {
     async getById(id: string): Promise<RechargeResponse | null> {
         const recharge = await this.rechargeService.getById(id)
         if (!recharge) {
-            throw new Error(appErrors.rechargeNotFound)
+            AppError.throw("rechargeNotFound")
         }
         return recharge
     }

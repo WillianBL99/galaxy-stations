@@ -8,6 +8,12 @@ export class PlanetServiceInMemory implements IPlanetService {
     constructor() {
         this.planets = []
     }
+    create(planet: IPlanet): Promise<IPlanet> {
+        throw new Error("Method not implemented.")
+    }
+    upsert(planet: IPlanet): Promise<IPlanet> {
+        throw new Error("Method not implemented.")
+    }
     async list(pagination: IPagination): Promise<IPlanet[]> {
         return this.planets
     }

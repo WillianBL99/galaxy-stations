@@ -2,7 +2,7 @@ import { IUserService } from "../service/IUserService";
 import { IUser, UserData, User } from "../entity/User";
 import { hashSync } from "bcrypt"
 
-import { appErrors } from "../../error/Errors";
+import { AppError } from "../../error/Errors";
 import { IEncryptor } from "../../utils/Encryptor";
 
 export type CreateUserRequest = Pick<UserData, "name" | "email" | "password">
@@ -28,7 +28,7 @@ export class UserUseCase {
     async create({ name, email, password }: CreateUserRequest): Promise<UserResponse> {
         const user = await this.userService.getByEmail(email)
         if (user) {
-            throw new Error(appErrors.emailOrPasswordAlreadyExists)
+            AppError.throw("emailOrPasswordAlreadyExists")
         }
         const hashedPassword = this.encryptor.hash(password)
         const userResponse = await this.userService.create(new User({
@@ -42,7 +42,7 @@ export class UserUseCase {
     async update({ id, name, email }: UpdateUserRequest): Promise<UserResponse> {
         const userFounded = await this.userService.getById(id)
         if (!userFounded) {
-            throw new Error(appErrors.userNotFound)
+            AppError.throw("userNotFound")
         }
         const user = new User({ name, email, password: userFounded.password })
         const updatedUser = await this.userService.update({
@@ -57,7 +57,7 @@ export class UserUseCase {
     async getById(id: string): Promise<IUser> {
         const userFounded = await this.userService.getById(id)
         if (!userFounded) {
-            throw new Error(appErrors.userNotFound)
+            AppError.throw("userNotFound")
         }
         return userFounded
     }
@@ -65,7 +65,7 @@ export class UserUseCase {
     async getByEmail(email: string): Promise<IUser> {
         const userFounded = await this.userService.getByEmail(email)
         if (!userFounded) {
-            throw new Error(appErrors.userNotFound)
+            AppError.throw("userNotFound")
         }
         return userFounded
     }

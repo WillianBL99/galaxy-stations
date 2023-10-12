@@ -37,7 +37,7 @@ export class PlanetPrismaService implements IPlanetService {
             })
             return this.parserData(createdPlanet)
         } catch (error) {
-            throw new Error("Prisma - Planet: " + error)
+            AppError.throw("internalError")
         }
     }
 
@@ -54,7 +54,7 @@ export class PlanetPrismaService implements IPlanetService {
             })
             return this.parserData(createdPlanet)
         } catch (error) {
-            throw new Error("Prisma - Planet: " + error)
+            AppError.throw("internalError")
         }      
     }
 
@@ -74,7 +74,7 @@ export class PlanetPrismaService implements IPlanetService {
             }
             return null
         } catch (error) {
-            throw new Error("Prisma - Planet: " + error)
+            AppError.throw("internalError")
         }
     }
 
@@ -88,7 +88,7 @@ export class PlanetPrismaService implements IPlanetService {
             }
             return null
         } catch (error) {
-            throw new Error("Prisma - Planet: " + error)
+            AppError.throw("internalError")
         }
     }
 
@@ -104,7 +104,7 @@ export class PlanetPrismaService implements IPlanetService {
             })
             return this.parserData(updatedPlanet)
         } catch (error) {
-            throw new Error("Prisma - Planet: " + error)
+            AppError.throw("internalError")
         }
     }
 
