@@ -1,6 +1,5 @@
 import { IUserService } from "../service/IUserService";
 import { IUser, UserData, User } from "../entity/User";
-import { hashSync } from "bcrypt"
 
 import { AppError } from "../../error/Errors";
 import { IEncryptor } from "../../utils/Encryptor";

@@ -25,11 +25,21 @@ export class QueryResolver {
         return this.appController.station.suitableStations(pagination)
     }
 
+    private stationHistory = (_: any, { pagination, stationId }: { pagination: Omit<IPagination, "active">, stationId: string }) => {
+        const { page, offset } = pagination ?? {}
+        const pg = new Pagination({ active: false });
+        if (page >= 0) {
+            pg.activate(page, offset)
+        }
+        return this.appController.recharge.listByStation(stationId, pg)
+    }
+
     content() {
 
         return {
             suitablePlanets: this.suitablePlanets,
             stations: this.stations,
+            stationHistory: this.stationHistory,
         }
     }
 }

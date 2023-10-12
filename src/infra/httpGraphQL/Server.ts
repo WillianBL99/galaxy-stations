@@ -47,7 +47,6 @@ export class GraphQLServer {
         const { url } = await startStandaloneServer(this.server, {
             listen: { port: 3000 },
             context: async ({ req, res }) => {
-                console.log({ req: req.headers.authorization })
                 return {
                     headers: req.headers
                 }

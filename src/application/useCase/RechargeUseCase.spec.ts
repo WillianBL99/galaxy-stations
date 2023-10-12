@@ -9,7 +9,7 @@ import { UserFactory } from "../../test/factory/UserFactory"
 import { randomUUID } from "crypto"
 import { IStation } from "../entity/Station"
 import { StationFactory } from "../../test/factory/StationFactory"
-import { appErrors } from "../../error/Errors"
+import { AppError } from "../../error/Errors"
 import { IRecharge, Recharge } from "../entity/Recharge"
 import { RechargeFactory } from "../../test/factory/RechargeFactory"
 import { Pagination } from "../../utils/Type"
@@ -72,7 +72,7 @@ describe("Recharge use cases", () => {
                     stationId: station.id,
                     endTime
                 })
-            }).rejects.toThrow(appErrors.userNotFound)
+            }).rejects.toThrow("userNotFound")
         })
     })
     describe("when pass a valid user id", () => {
@@ -103,7 +103,7 @@ describe("Recharge use cases", () => {
                 station = StationFactory.getStation()
                 stationService.stations.push(station)
             })
-            it("shoud create a recharge when provided with a station and a valid datetime", async () => {
+            it("should create a recharge when provided with a station and a valid datetime", async () => {
                 const expectedDuration = 50 // milliseconds
                 const endTime = new Date(new Date().getTime() + expectedDuration)
 
@@ -115,7 +115,7 @@ describe("Recharge use cases", () => {
                 expect(result.endTime.getTime()).to.be.equal(endTime.getTime())
                 expect(rechargeService.recharges).length(1)
             })
-            it("shoud return a recharge in the time provided", async () => {
+            it("should return a recharge in the time provided", async () => {
                 const expectedDuration = 50 // milliseconds
                 const maxLatency = 2 // milliseconds
                 const endTime = new Date(new Date().getTime() + expectedDuration)
@@ -133,7 +133,7 @@ describe("Recharge use cases", () => {
                 expect(duration).to.lessThan(expectedDuration + maxLatency)
                 expect(rechargeService.recharges).length(1)
             })
-            it("shoud not create a recharge when the station is not found", async () => {
+            it("should not create a recharge when the station is not found", async () => {
                 const expectedDuration = 50 // milliseconds
                 const endTime = new Date(new Date().getTime() + expectedDuration)
                 stationService.stations[0].charging = true
@@ -144,10 +144,10 @@ describe("Recharge use cases", () => {
                         stationId: randomUUID(),
                         endTime
                     })
-                }).rejects.toThrow(appErrors.stationNotFound)
+                }).rejects.toThrow("stationNotFound")
                 expect(rechargeService.recharges).length(0)
             })
-            it("shoud not create a recharge when the station is already charging", async () => {
+            it("should not create a recharge when the station is already charging", async () => {
                 const expectedDuration = 50 // milliseconds
                 const endTime = new Date(new Date().getTime() + expectedDuration)
                 stationService.stations[0].charging = true
@@ -158,10 +158,10 @@ describe("Recharge use cases", () => {
                         stationId: station.id,
                         endTime
                     })
-                }).rejects.toThrow(appErrors.stationIsAlreadyCharging)
+                }).rejects.toThrow("stationIsAlreadyCharging")
                 expect(rechargeService.recharges).length(0)
             })
-            it("shoud create a recharge when not conflict with a reserved recharge", async () => {
+            it("should create a recharge when not conflict with a reserved recharge", async () => {
                 const expectedDuration = 50 // milliseconds
                 const endTime = new Date(new Date().getTime() + expectedDuration)
                 const reservedRecharge = RechargeFactory.getRecharge({
@@ -180,7 +180,7 @@ describe("Recharge use cases", () => {
                 expect(result.endTime).to.be.equal(endTime)
                 expect(rechargeService.recharges).length(2)
             })
-            it("shoud not create a recharge when conflict with a reserved recharge", async () => {
+            it("should not create a recharge when conflict with a reserved recharge", async () => {
                 const expectedDuration = 50 // milliseconds
                 const endTime = new Date(new Date().getTime() + expectedDuration)
                 const reservedRecharge = RechargeFactory.getRecharge({
@@ -197,7 +197,7 @@ describe("Recharge use cases", () => {
                         stationId: station.id,
                         endTime
                     })
-                }).rejects.toThrow(appErrors.conflictTimeWithReservedCharge)
+                }).rejects.toThrow("conflictTimeWithReservedCharge")
                 expect(rechargeService.recharges).length(1)
             })
             it("should return an error when a user tries to initiate two recharges simultaneously in two stations", async () => {
@@ -211,27 +211,13 @@ describe("Recharge use cases", () => {
                 rechargeService.recharges.push({ ...recharge2, status: "charging" })
 
                 expect(await rechargeService.listByStatusAndUser("charging", user.id, new Pagination({ active: false }))).length(1)
-                // async function st() {
-                //     try {
-                //         const results = []
-                //         results.push(rechargeUseCase.recharge(recharge1))
-                //         results.push(rechargeUseCase.recharge(recharge2))
-                //         await Promise.all(results)
-                //     } catch (error) {
-                //         return error
-                //     }
-                // }
-
+                
                 await expect(async () => {
                     const results = []
                     results.push(rechargeUseCase.recharge(recharge1))
                     results.push(rechargeUseCase.recharge(recharge2))
                     await Promise.all(results)
-                }).rejects.toThrow(appErrors.UserAlreadyChargingASpacecraft)
-                // const error = await st()
-                // expect(error).toBeDefined()
-                // expect(error).to.be.instanceof(appErrors.UserAlreadyChargingASpacecraft)
-                // expect(rechargeService.recharges).length(1)
+                }).rejects.toThrow("UserAlreadyChargingASpacecraft")
             })
         })
         describe("getById", () => {
@@ -264,7 +250,7 @@ describe("Recharge use cases", () => {
             it("should return an error when no planet are found by id", async () => {
                 await expect(async () => {
                     await rechargeUseCase.getById(randomUUID())
-                }).rejects.toThrow(appErrors.rechargeNotFound)
+                }).rejects.toThrow("rechargeNotFound")
             })
         })
         describe("listByStation", () => {
@@ -346,7 +332,7 @@ describe("Recharge use cases", () => {
 
                 await expect(async () => {
                     await rechargeUseCase.protectedHandleConflict(recharge, station.id, user.id, callback)
-                }).rejects.toThrow(appErrors.invalidEndTime)
+                }).rejects.toThrow("invalidEndTime")
                 expect(callback).toBeCalledTimes(1)
             })
 
@@ -365,7 +351,7 @@ describe("Recharge use cases", () => {
 
                 await expect(async () => {
                     await rechargeUseCase.protectedHandleConflict(recharge, station.id, user.id, callback)
-                }).rejects.toThrow(appErrors.conflictTimeWithReservedCharge)
+                }).rejects.toThrow("conflictTimeWithReservedCharge")
                 expect(callback).toBeCalledTimes(1)
             })
 

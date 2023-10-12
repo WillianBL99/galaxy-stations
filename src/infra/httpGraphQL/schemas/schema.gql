@@ -57,7 +57,7 @@ type Station {
     planetId: String!
     createdAt: String!
     updatedAt: String
-    planet: Planet!
+    # planet: Planet!
 }
 
 # type StationHistory {
@@ -92,7 +92,7 @@ type Recharge {
 type Query {
     suitablePlanets(pagination: PaginationArgs ): [Planet!]!
     stations(pagination: PaginationArgs ): [Station!]!
-    # stationHistory: Station!
+    stationHistory(pagination: PaginationArgs, stationId: String!): [Recharge!]!
 }
 
 # type Reservation {

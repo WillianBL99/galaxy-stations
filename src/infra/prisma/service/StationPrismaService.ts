@@ -63,7 +63,6 @@ export class StationPrismaService implements IStationService {
     }
     async getByName(name: string): Promise<IStation | null> {
         try {
-            console.log({ name })
             const station = await this.prisma.station.findUnique({
                 where: { name }
             })

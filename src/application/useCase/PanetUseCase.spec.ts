@@ -4,7 +4,7 @@ import { PlanetFactory } from "../../test/factory/PlanetFactory";
 import { Pagination } from "../../utils/Type";
 import { randomUUID } from "crypto";
 import { PlanetUseCase } from "./PlanetUseCase";
-import { appErrors } from "../../error/Errors";
+import { AppError } from "../../error/Errors";
 import { IPlanet } from "../entity/Planet";
 
 class ProtectedMetods extends PlanetUseCase {
@@ -51,7 +51,7 @@ describe("Planet use cases", () => {
             const call = async () => {
                 await planetUseCase.getById(randomUUID())
             }
-            expect(call()).rejects.toThrow(appErrors.planetNotFound)
+            expect(call()).rejects.toThrow("planetNotFound")
         })
     })
     describe("getByName", () => {
@@ -75,7 +75,7 @@ describe("Planet use cases", () => {
             const call = async () => {
                 await planetUseCase.getByName("Invalid planet name")
             }
-            expect(call()).rejects.toThrow(appErrors.planetNotFound)
+            expect(call()).rejects.toThrow("planetNotFound")
         })
     })
     describe("updateHasStation", () => {
@@ -100,7 +100,7 @@ describe("Planet use cases", () => {
             const call = async () => {
                 await planetUseCase.updateHasStation(randomUUID(), true)
             }
-            expect(call()).rejects.toThrow(appErrors.planetNotFound)
+            expect(call()).rejects.toThrow("planetNotFound")
         })
         it("should update the updatedAt property", async () => {
             const planet = PlanetFactory.getPlanet()

@@ -60,6 +60,12 @@ CREATE TABLE "user" (
 -- CreateIndex
 CREATE UNIQUE INDEX "planet_name_key" ON "planet"("name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "station_name_key" ON "station"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
+
 -- AddForeignKey
 ALTER TABLE "station" ADD CONSTRAINT "station_planetId_fkey" FOREIGN KEY ("planetId") REFERENCES "planet"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 

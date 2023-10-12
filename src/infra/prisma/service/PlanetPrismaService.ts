@@ -3,6 +3,7 @@ import { IPlanet } from "../../../application/entity/Planet";
 import { IPlanetService } from "../../../application/service/IPlanetService";
 import { IPagination } from "../../../utils/Type";
 import { Parsers } from "../../../utils/Parsers";
+import { AppError } from "../../../error/Errors";
 
 
 export class PlanetPrismaService implements IPlanetService {

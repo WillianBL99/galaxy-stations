@@ -3,7 +3,7 @@ import { beforeEach, describe, it } from "vitest";
 import { UserServiceInMemory } from "../../test/in-memory/UserServiceInMemory";
 import { UserUseCase } from "./UserUseCase";
 import { expect } from "vitest";
-import { appErrors } from "../../error/Errors";
+import { AppError, appErrors } from "../../error/Errors";
 import { IEncryptor } from "../../utils/Encryptor";
 
 class Encryptor implements IEncryptor {
@@ -46,7 +46,7 @@ describe("User use cases", () => {
 
             await expect(async () => {
                 await userUseCase.create({ ...user })
-            }).rejects.toThrow(appErrors.emailOrPasswordAlreadyExists)
+            }).rejects.toThrow("emailOrPasswordAlreadyExists")
             expect(userService.users).length(1)
         })
         it("should hash the password", async () => {
@@ -79,7 +79,7 @@ describe("User use cases", () => {
 
             await expect(async () => {
                 await userUseCase.update({ ...user })
-            }).rejects.toThrow(appErrors.userNotFound)
+            }).rejects.toThrow("userNotFound")
         })
         it("should update the updatedAt property", async () => {
             const user = UserFactory.getUser()
@@ -113,7 +113,7 @@ describe("User use cases", () => {
             const user = UserFactory.getUser()
             await expect(async () => {
                 await userUseCase.getById(user.id)
-            }).rejects.toThrow(appErrors.userNotFound)
+            }).rejects.toThrow("userNotFound")
         })
     })
     describe("getByEmail", () => {
@@ -136,7 +136,7 @@ describe("User use cases", () => {
             const user = UserFactory.getUser()
             await expect(async () => {
                 await userUseCase.getByEmail(user.email)
-            }).rejects.toThrow(appErrors.userNotFound)
+            }).rejects.toThrow("userNotFound")
         })
     })
 })

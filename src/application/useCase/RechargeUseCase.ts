@@ -84,12 +84,13 @@ export class RechargeUseCase {
         this.reserveStationForCharging(station)
         const recharge = new Recharge({
             userId,
-            endTime,
             stationId,
             status: "charging",
             startTime: new Date(),
+            endTime: new Date(endTime),
             pricePerMinute: this.appConfig.pricePerMinute,
         })
+        
         await this.rechargeService.create(recharge)
         const revert = () => {
             this.releaseStationFromCharging(station)

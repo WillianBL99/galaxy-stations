@@ -1,7 +1,7 @@
 type ErrorType = "Application" | "Service";
 type AppErrorType = {
     [key: string]: { message: string; status: number, type: ErrorType };
-  };
+};
 export class CustomError extends Error {
     status: number
     constructor(message: string, status: number) {

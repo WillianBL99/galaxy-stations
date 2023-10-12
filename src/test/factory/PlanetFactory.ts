@@ -12,7 +12,7 @@ export class PlanetFactory {
 
     static getPlanet(): IPlanet {
         return new Planet({
-            name: faker.science.chemicalElement().name,
+            name: "um" + faker.science.chemicalElement().name,
             mass: faker.number.float({ min: 10000, max: 30000 }),
             hasStation: false,
         })

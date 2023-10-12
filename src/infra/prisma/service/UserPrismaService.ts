@@ -67,6 +67,19 @@ export class UserPrismaService implements IUserService {
     }
 
     async update(user: IUser): Promise<IUser> {
-        throw new Error("Method not implemented.");
+        try {
+            const updatedPlanet = await this.prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    name: user.name,
+                    email: user.email,
+                    password: user.password,
+                    updatedAt: user.updatedAt,
+                }
+            })
+            return this.parserData(updatedPlanet)
+        } catch (error) {
+            AppError.throw("internalError")
+        }
     }
 }

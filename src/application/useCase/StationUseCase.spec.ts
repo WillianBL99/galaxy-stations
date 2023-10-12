@@ -5,7 +5,7 @@ import { PlanetServiceInMemory } from "../../test/in-memory/PlanetServiceInMemor
 import { IPlanet } from "../entity/Planet";
 import { PlanetFactory } from "../../test/factory/PlanetFactory";
 import { StationFactory } from "../../test/factory/StationFactory";
-import { appErrors } from "../../error/Errors";
+import { AppError } from "../../error/Errors";
 import { IStation } from "../entity/Station";
 import { Pagination } from "../../utils/Type";
 import { randomUUID } from "crypto";
@@ -33,7 +33,7 @@ describe("Station use cases", () => {
             planetService.planets.push(planet)
         })
         it("should create a new station when it does not already exist", async () => {
-            const result = await stationUseCase.create("station", planet.name)
+            const result = await stationUseCase.create({ stationName: "station", planetName: planet.name })
 
             expect(result?.name).to.equal("station")
             expect(result?.planetId).to.equal(planet.id)
@@ -44,14 +44,14 @@ describe("Station use cases", () => {
             stationService.stations.push(station)
 
             await expect(async () => {
-                await stationUseCase.create(station.name, planet.name)
-            }).rejects.toThrow(appErrors.stationAlreadyExists)
+                await stationUseCase.create({ planetName: planet.name, stationName: station.name })
+            }).rejects.toThrow("stationAlreadyExists")
         });
 
         it("should throw an error if the planet does not exist", async () => {
             await expect(async () => {
-                await stationUseCase.create("station", "inexistent-planet")
-            }).rejects.toThrow(appErrors.planetNotFound)
+                await stationUseCase.create({ stationName: "station", planetName: "inexistent-planet" })
+            }).rejects.toThrow("planetNotFound")
         });
     })
     describe("list", () => {
@@ -142,7 +142,7 @@ describe("Station use cases", () => {
         it("should return an error when the station is not found by id", async () => {
             await expect(async () => {
                 await stationUseCase.getById(randomUUID())
-            }).rejects.toThrow(appErrors.stationNotFound)
+            }).rejects.toThrow("stationNotFound")
         })
     })
     describe("parseStation", () => {
