@@ -1,9 +1,13 @@
 import jwt from 'jsonwebtoken';
 import { IUserController } from '../../../application/controller/UserController'
 import { BaseContext } from '@apollo/server'
+import { IUser } from '../../../application/entity/User';
 
 
-export type TokenResponse = { token: string }
+export type TokenResponse = {
+    token: string,
+    user: Pick<IUser, "name" | "email">
+}
 export type ContextData = { userId: string }
 
 export class AuthContext {

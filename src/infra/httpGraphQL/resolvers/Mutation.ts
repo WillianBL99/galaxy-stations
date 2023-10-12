@@ -13,6 +13,7 @@ type InstallStationInput = {
 
 type RechargeInput = { input: Omit<CreateRechargeRequest, "userId"> }
 type RegisterInput = { input: CreateUserRequest }
+type LoginInput = { input: Omit<CreateUserRequest, "name"> }
 
 export class MutationResolver {
     constructor(
@@ -24,6 +25,12 @@ export class MutationResolver {
         const { name, email, password } = args.input
         const user = await this.appController.user.register({ name, email, password })
         return user
+    }
+
+    private login = async (_: any, args: LoginInput) => {
+        const { email, password } = args.input
+        const { token, user } = await this.appController.user.login({ email, password })
+        return { token, user }
     }
 
     private installStation = async (_: any, args: InstallStationInput, context: MyContext) => {
@@ -47,6 +54,7 @@ export class MutationResolver {
     content() {
         return {
             register: this.register,
+            login: this.login,
             installStation: this.installStation,
             recharge: this.recharge
         }

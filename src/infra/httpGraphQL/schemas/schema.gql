@@ -10,6 +10,21 @@ input RegisterArgs {
     password: String!
 }
 
+input LoginArgs {
+    email: String!
+    password: String!
+}
+
+type UserLogin {
+    name: String!
+    email: String!
+}
+
+type AuthPayload {
+    token: String!
+    user: UserLogin!
+}
+
 type User {
     id: ID!
     name: String!
@@ -95,6 +110,6 @@ type Mutation {
     installStation(input: InstallStationArgs): Station!
     recharge(input: RechargeArgs): Recharge!
     register(input: RegisterArgs): User
-    # login(email: String!, password: String!): AuthPayload!
+    login(input: LoginArgs): AuthPayload!
     # reservation(input: ReservationArgs): ReservationId 
 }

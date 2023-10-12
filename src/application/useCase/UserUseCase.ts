@@ -54,7 +54,7 @@ export class UserUseCase {
         return UserUseCase.parseUser(updatedUser)
     }
 
-    async getById(id: string): Promise<UserResponse> {
+    async getById(id: string): Promise<IUser> {
         const userFounded = await this.userService.getById(id)
         if (!userFounded) {
             throw new Error(appErrors.userNotFound)
@@ -62,7 +62,7 @@ export class UserUseCase {
         return userFounded
     }
 
-    async getByEmail(email: string): Promise<UserResponse> {
+    async getByEmail(email: string): Promise<IUser> {
         const userFounded = await this.userService.getByEmail(email)
         if (!userFounded) {
             throw new Error(appErrors.userNotFound)
