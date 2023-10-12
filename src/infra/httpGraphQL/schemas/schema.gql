@@ -25,6 +25,7 @@ type Station {
     planetId: String!
     createdAt: String!
     updatedAt: String
+    planet: Planet!
 }
 
 # type StationHistory {
@@ -58,7 +59,7 @@ type Recharge {
 
 type Query {
     suitablePlanets(pagination: PaginationArgs ): [Planet!]!
-    stations: [Station!]!
+    stations(pagination: PaginationArgs ): [Station!]!
     # stationHistory: Station!
 }
 
@@ -74,7 +75,7 @@ type Query {
 # }
 
 type Mutation {
-    instalStation(input: InstallStationArgs): Station
+    installStation(input: InstallStationArgs): Station
     recharge(input: RechargeArgs): Recharge
     # reservation(input: ReservationArgs): ReservationId 
 }

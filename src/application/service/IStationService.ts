@@ -8,7 +8,7 @@ interface IStationService {
     getById(id: string): Promise<IStation | null>
     getByName(name: string): Promise<IStation | null>
     listByPlanet(planetId: string, pagination: IPagination): Promise<IStation[]>
-    update(Station: IStation): Promise<IStation>
+    update(station: IStation): Promise<IStation>
 }
 
 export { IStationService }

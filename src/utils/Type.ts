@@ -11,9 +11,9 @@ export interface PaginationData {
 }
 
 export class Pagination implements Pagination {
-    readonly offset: number
-    readonly page: number
-    readonly active: boolean
+    offset: number
+    page: number
+    active: boolean
     constructor({ active, offset, page }: PaginationData) {
         this.active = active ?? true
         this.offset = offset ?? 0
@@ -21,5 +21,11 @@ export class Pagination implements Pagination {
         if (this.page < 0) {
             throw new Error(`Page should be greater or equal to 0`)
         }
+    }
+
+    activate(page: number, offset: number) {
+        this.active = true
+        this.page = page
+        this.offset = offset
     }
 }

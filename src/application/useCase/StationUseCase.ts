@@ -5,7 +5,11 @@ import { IStation, Station } from "../entity/Station";
 import { appErrors } from "../../error/Errors";
 import { IPagination } from "../../utils/Type";
 
-type StationResponse = Omit<IStation, "deletedAt">
+export type StationResponse = Omit<IStation, "deletedAt">
+export type CreateStationData = {
+    stationName: string
+    planetName: string
+}
 
 export class StationUseCase {
     constructor(
@@ -24,7 +28,7 @@ export class StationUseCase {
         }
     }
 
-    async create(stationName: string, planetName: string): Promise<StationResponse | null> {
+    async create({stationName, planetName}: CreateStationData): Promise<StationResponse> {
         let station = await this.stationService.getByName(stationName)
         if (station) {
             throw new Error(appErrors.stationAlreadyExists)

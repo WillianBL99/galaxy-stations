@@ -6,20 +6,30 @@ type GQLPagination = {
 }
 export class QueryResolver {
     constructor(private readonly appController: AppController) { }
-    content() {
-        const suitablePlanets = (_: any, gqlP: GQLPagination) => {
-            const { page, offset } = gqlP.pagination
-            const pagination = new Pagination({ active: false });
-            if (page >= 0) {
-                pagination.activate(page, offset)
-            }
-            return this.appController.planet.suitablePlanets(pagination);
-        }
-        const stations = () => {
 
+    private suitablePlanets = (_: any, gqlP: GQLPagination) => {
+        const { page, offset } = gqlP.pagination ?? {}
+        const pagination = new Pagination({ active: false });
+        if (page >= 0) {
+            pagination.activate(page, offset)
         }
+        return this.appController.planet.suitablePlanets(pagination);
+    }
+
+    private stations = (_: any, gqlP: GQLPagination) => {
+        const { page, offset } = gqlP.pagination ?? {}
+        const pagination = new Pagination({ active: false });
+        if (page >= 0) {
+            pagination.activate(page, offset)
+        }
+        return this.appController.station.suitableStations(pagination)
+    }
+
+    content() {
+
         return {
-            suitablePlanets
+            suitablePlanets: this.suitablePlanets,
+            stations: this.stations,
         }
     }
 }
