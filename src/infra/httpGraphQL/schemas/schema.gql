@@ -1,0 +1,55 @@
+type Planet {
+    id: ID!
+    name: String!
+    mass: Float!
+    hasStation: Boolean!
+    checkedAt: String!
+    createdAt: String!
+    updatedAt: String
+}
+
+input InstallStationArgs {
+    name: String!
+    planet: String!
+}
+
+type Station {
+    id: ID!,
+    name: String!,
+    charging: Boolean!
+    planetId: String!
+    createdAt: String!
+    updatedAt: String
+}
+
+input RechargeArgs {
+    stationId: String!
+    endTime: String!
+}
+
+enum RechargeStatus {
+    RESERVED
+    CHARGING
+    DONE
+}
+
+type Recharge {
+    id: ID!
+    startTime: String!
+    endTime: String!
+    pricePerMinute: Float!
+    status: RechargeStatus!
+    userId: String!
+    stationId: String!
+    createdAt: String!
+    updatedAt: String
+}
+
+type Query {
+    suitablePlanets: [Planet!]!
+}
+
+type Mutation {
+    instalStation(input: InstallStationArgs): Station
+    recharge(input: RechargeArgs): Recharge
+}
