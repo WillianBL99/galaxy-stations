@@ -1,0 +1,74 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Planet {
+    id         String    @id
+    name       String    @unique
+    mass       Float
+    hasStation Boolean
+    checkedAt  DateTime
+    createdAt  DateTime
+    updatedAt  DateTime?
+    deletedAt  DateTime?
+    stations   Station[]
+
+    @@map("planet")
+}
+
+model Station {
+    id        String     @id
+    name      String     @unique
+    charging  Boolean
+    planetId  String
+    createdAt DateTime
+    updatedAt DateTime?
+    deletedAt DateTime?
+    planet    Planet     @relation(fields: [planetId], references: [id])
+    recharges Recharge[]
+
+    @@map("station")
+}
+
+enum RechargeStatus {
+    reserved @map("RESERVED")
+    charging @map("CHARGING")
+    done     @map("DONE")
+
+    @@map("recharge_status")
+}
+
+model Recharge {
+    id             String         @id
+    startTime      DateTime
+    endTime        DateTime
+    pricePerMinute Float
+    status         RechargeStatus
+    userId         String
+    stationId      String
+    createdAt      DateTime
+    updatedAt      DateTime?
+    deletedAt      DateTime?
+    user           User           @relation(fields: [userId], references: [id])
+    station        Station        @relation(fields: [stationId], references: [id])
+
+    @@map("recharge")
+}
+
+model User {
+    id        String     @id
+    name      String
+    email     String     @unique
+    password  String
+    createdAt DateTime
+    updatedAt DateTime?
+    deletedAt DateTime?
+    recharges Recharge[]
+
+    @@map("user")
+}

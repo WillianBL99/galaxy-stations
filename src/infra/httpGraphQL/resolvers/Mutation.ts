@@ -1,5 +1,6 @@
 import { AppController } from "../../../application/controller";
 import { CreateRechargeRequest } from "../../../application/useCase/RechargeUseCase";
+import { CreateUserRequest } from "../../../application/useCase/UserUseCase";
 import { MyContext } from "../Server";
 import { AuthContext } from "../context/AuthContext";
 
@@ -10,15 +11,20 @@ type InstallStationInput = {
     }
 }
 
-type RechargeInput = {
-    input: Omit<CreateRechargeRequest, "userId">
-}
+type RechargeInput = { input: Omit<CreateRechargeRequest, "userId"> }
+type RegisterInput = { input: CreateUserRequest }
 
 export class MutationResolver {
     constructor(
         private readonly auth: AuthContext,
         private readonly appController: AppController
     ) { }
+
+    private register = async (_: any, args: RegisterInput) => {
+        const { name, email, password } = args.input
+        const user = await this.appController.user.register({ name, email, password })
+        return user
+    }
 
     private installStation = async (_: any, args: InstallStationInput, context: MyContext) => {
         const data = await this.auth.validateToken(context?.headers?.authorization)
@@ -40,6 +46,7 @@ export class MutationResolver {
 
     content() {
         return {
+            register: this.register,
             installStation: this.installStation,
             recharge: this.recharge
         }

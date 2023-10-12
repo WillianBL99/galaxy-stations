@@ -1,6 +1,6 @@
-import { IAppConfig, IEncryptionConfig } from "../../config/Config"
-import { AppService } from ".."
+import { AppConfig } from "../../config/Config"
 import { IEncryptor } from "../../utils/Encryptor"
+import { AppService } from "../service"
 import { PlanetUseCase } from "./PlanetUseCase"
 import { RechargeUseCase } from "./RechargeUseCase"
 import { StationUseCase } from "./StationUseCase"
@@ -13,7 +13,7 @@ export class AppUseCase {
     user: UserUseCase
     constructor(
         private readonly appService: AppService,
-        private readonly appConfig: IAppConfig,
+        private readonly appConfig: AppConfig,
         private readonly encryptor: IEncryptor
     ) {
         this.planet = new PlanetUseCase(appService.planet)

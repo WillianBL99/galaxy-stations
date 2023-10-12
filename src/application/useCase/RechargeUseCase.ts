@@ -4,7 +4,7 @@ import { IRecharge, Recharge, RechargeData } from "../entity/Recharge";
 import { IStationService } from "../service/IStationService";
 import { IUserService } from "../service/IUserService";
 import { IPagination, Pagination } from "../../utils/Type";
-import { IAppConfig } from "../../config/Config";
+import { AppConfig } from "../../config/Config";
 import { appErrors } from "../../error/Errors";
 import { IStation } from "../entity/Station";
 
@@ -16,7 +16,7 @@ export class RechargeUseCase {
         private readonly rechargeService: IRechargeService,
         private readonly stationService: IStationService,
         private readonly userService: IUserService,
-        private readonly appConfig: IAppConfig
+        private readonly appConfig: AppConfig
     ) { }
 
     protected static parseRecharge(recharge: IRecharge): RechargeResponse {

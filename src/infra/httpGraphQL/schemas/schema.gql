@@ -4,11 +4,20 @@ input PaginationArgs {
     offset: Int = 10
 }
 
+input RegisterArgs {
+    name: String!
+    email: String!
+    password: String!
+}
+
 type User {
     id: ID!
     name: String!
     email: String!
     password: String!
+    checkedAt: String!
+    createdAt: String!
+    updatedAt: String
 }
 
 type Planet {
@@ -83,8 +92,9 @@ type Query {
 # }
 
 type Mutation {
-    installStation(input: InstallStationArgs): Station
-    recharge(input: RechargeArgs): Recharge
+    installStation(input: InstallStationArgs): Station!
+    recharge(input: RechargeArgs): Recharge!
+    register(input: RegisterArgs): User
     # login(email: String!, password: String!): AuthPayload!
     # reservation(input: ReservationArgs): ReservationId 
 }

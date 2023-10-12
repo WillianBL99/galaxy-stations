@@ -3,7 +3,7 @@ import { RechargeServiceInMemory } from "../../test/in-memory/RechargeServiceInM
 import { RechargeUseCase } from "./RechargeUseCase"
 import { StationServiceInMemory } from "../../test/in-memory/StationServiceInMemory"
 import { UserServiceInMemory } from "../../test/in-memory/UserServiceInMemory"
-import { IAppConfig } from "../../config/Config"
+import { AppConfig } from "../../config/Config"
 import { IUser } from "../entity/User"
 import { UserFactory } from "../../test/factory/UserFactory"
 import { randomUUID } from "crypto"
@@ -14,7 +14,7 @@ import { IRecharge, Recharge } from "../entity/Recharge"
 import { RechargeFactory } from "../../test/factory/RechargeFactory"
 import { Pagination } from "../../utils/Type"
 
-class Config implements IAppConfig {
+class Config implements AppConfig {
     pricePerMinute: number
     constructor(pricePerMinute: number) {
         this.pricePerMinute = pricePerMinute
@@ -41,7 +41,7 @@ describe("Recharge use cases", () => {
         let rechargeService: RechargeServiceInMemory
         let stationService: StationServiceInMemory
         let rechargeUseCase: RechargeUseCase
-        let appConfig: IAppConfig
+        let appConfig: AppConfig
         let userService: UserServiceInMemory
         let station: IStation
         beforeEach(() => {
@@ -87,7 +87,7 @@ describe("Recharge use cases", () => {
             let rechargeService: RechargeServiceInMemory
             let stationService: StationServiceInMemory
             let rechargeUseCase: RechargeUseCase
-            let appConfig: IAppConfig
+            let appConfig: AppConfig
             let station: IStation
             beforeEach(() => {
                 rechargeService = new RechargeServiceInMemory()
@@ -238,7 +238,7 @@ describe("Recharge use cases", () => {
             let rechargeService: RechargeServiceInMemory
             let stationService: StationServiceInMemory
             let rechargeUseCase: RechargeUseCase
-            let appConfig: IAppConfig
+            let appConfig: AppConfig
             beforeEach(() => {
                 rechargeService = new RechargeServiceInMemory()
                 stationService = new StationServiceInMemory()
@@ -271,7 +271,7 @@ describe("Recharge use cases", () => {
             let rechargeService: RechargeServiceInMemory
             let stationService: StationServiceInMemory
             let rechargeUseCase: RechargeUseCase
-            let appConfig: IAppConfig
+            let appConfig: AppConfig
             let station: IStation
             beforeEach(() => {
                 rechargeService = new RechargeServiceInMemory()
@@ -320,7 +320,7 @@ describe("Recharge use cases", () => {
             let rechargeService: RechargeServiceInMemory
             let stationService: StationServiceInMemory
             let rechargeUseCase: ProtectedMetods
-            let appConfig: IAppConfig
+            let appConfig: AppConfig
             let station: IStation
             beforeEach(() => {
                 rechargeService = new RechargeServiceInMemory()
