@@ -1,25 +1,25 @@
-import { UUID, randomUUID } from "crypto"
+import { randomUUID } from "crypto"
 
 interface IStation extends IBase {
-    id: UUID
+    id: string
     name: string
     charging: boolean
-    planetId: UUID
+    planetId: string
 }
 
 interface StationData extends BaseData {
-    id?: UUID,
+    id?: string,
     name: string,
     charging?: boolean
-    planetId: UUID
+    planetId: string
 }
 
 class Station implements IStation {
-    readonly id: UUID
+    readonly id: string
     name: string
     charging: boolean
-    planetId: UUID
-    cratedAt: Date
+    planetId: string
+    createdAt: Date
     updatedAt?: Date | undefined
     deletedAt?: Date | undefined
 
@@ -28,7 +28,7 @@ class Station implements IStation {
         this.name = name
         this.charging = charging ?? false
         this.planetId = planetId
-        this.cratedAt = createdAt ?? new Date()
+        this.createdAt = createdAt ?? new Date()
         this.updatedAt = updatedAt
         this.deletedAt = deletedAt
     }

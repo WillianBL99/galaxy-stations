@@ -1,5 +1,5 @@
 interface IBase {
-    cratedAt: Date
+    createdAt: Date
     updatedAt?: Date
     deletedAt?: Date
 }

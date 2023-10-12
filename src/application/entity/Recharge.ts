@@ -1,35 +1,35 @@
-import { UUID, randomUUID } from "crypto"
+import { randomUUID } from "crypto"
 
 type RechargeStatus = "done" | "reserved" | "charging"
 interface IRecharge extends IBase {
-    id: UUID
+    id: string
     startTime: Date
     endTime: Date
     pricePerMinute: number
     status: RechargeStatus
-    userId: UUID,
-    stationId: UUID
+    userId: string,
+    stationId: string
 }
 
 interface RechargeData extends BaseData {
-    id?: UUID,
+    id?: string,
     startTime: Date
     endTime: Date
     pricePerMinute: number
     status?: RechargeStatus
-    userId: UUID
-    stationId: UUID
+    userId: string
+    stationId: string
 }
 
 class Recharge implements IRecharge {
-    readonly id: UUID
+    readonly id: string
     readonly startTime: Date
     readonly endTime: Date
     readonly pricePerMinute: number
     status: RechargeStatus
-    readonly userId: UUID
-    readonly stationId: UUID
-    readonly cratedAt: Date
+    readonly userId: string
+    readonly stationId: string
+    readonly createdAt: Date
     updatedAt?: Date | undefined
     deletedAt?: Date | undefined
 
@@ -52,7 +52,7 @@ class Recharge implements IRecharge {
         this.status = status ?? "done"
         this.userId = userId
         this.stationId = stationId
-        this.cratedAt = createdAt ?? new Date()
+        this.createdAt = createdAt ?? new Date()
         this.updatedAt = updatedAt
         this.deletedAt = deletedAt
     }

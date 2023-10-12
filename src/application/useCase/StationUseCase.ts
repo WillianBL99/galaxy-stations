@@ -1,7 +1,7 @@
 import { IPlanetService } from "../service/IPlanetService";
 import { IStationService } from "../service/IStationService";
 import { IStation, Station } from "../entity/Station";
-import { UUID } from "crypto";
+
 import { appErrors } from "../../error/Errors";
 import { IPagination } from "../../utils/Type";
 
@@ -19,7 +19,7 @@ export class StationUseCase {
             name: station.name,
             charging: station.charging,
             planetId: station.planetId,
-            cratedAt: station.cratedAt,
+            createdAt: station.createdAt,
             updatedAt: station.updatedAt
         }
     }
@@ -43,12 +43,12 @@ export class StationUseCase {
         return station.map(StationUseCase.parseStation)
     }
 
-    async listByPlanet(planetId: UUID, pagination: IPagination): Promise<StationResponse[]> {
+    async listByPlanet(planetId: string, pagination: IPagination): Promise<StationResponse[]> {
         const station = await this.stationService.listByPlanet(planetId, pagination)
         return station
     }
 
-    async getById(id: UUID): Promise<StationResponse | null> {
+    async getById(id: string): Promise<StationResponse | null> {
         const station = await this.stationService.getById(id)
         if (!station) {
             throw new Error(appErrors.stationNotFound)

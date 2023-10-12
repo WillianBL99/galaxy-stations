@@ -1,4 +1,4 @@
-import { UUID } from "crypto";
+
 import { IUser } from "../../application/entity/User";
 import { IUserService } from "../../application/service/IUserService";
 
@@ -11,7 +11,7 @@ export class UserServiceInMemory implements IUserService {
         this.users.push(user)
         return user
     }
-    async getById(id: UUID): Promise<IUser | null> {
+    async getById(id: string): Promise<IUser | null> {
         return this.users.find(user => user.id === id) || null
     }
     async getByEmail(email: string): Promise<IUser | null> {

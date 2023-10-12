@@ -1,34 +1,38 @@
-import { UUID, randomUUID } from "crypto"
+import { randomUUID } from "crypto"
 
 interface IPlanet extends IBase {
-    id: UUID
+    id: string
     name: string
-    checkedAt: Date
+    mass: number
     hasStation: boolean
+    checkedAt: Date
 }
 
 interface PlanetData extends BaseData {
-    id?: UUID,
+    id?: string,
     name: string,
-    checkedAt?: Date
+    mass: number
     hasStation: boolean,
+    checkedAt?: Date
 }
 
 class Planet implements IPlanet {
-    readonly id: UUID
+    readonly id: string
     name: string
+    mass: number
     hasStation: boolean
     checkedAt: Date
-    cratedAt: Date
+    createdAt: Date
     updatedAt?: Date | undefined
     deletedAt?: Date | undefined
 
-    constructor({ id, name, hasStation, checkedAt, createdAt, updatedAt, deletedAt }: PlanetData) {
+    constructor({ id, name, mass,hasStation, checkedAt, createdAt, updatedAt, deletedAt }: PlanetData) {
         this.id = id ?? randomUUID()
         this.name = name
+        this.mass = mass
         this.hasStation = hasStation
         this.checkedAt = checkedAt || new Date()
-        this.cratedAt = createdAt ?? new Date()
+        this.createdAt = createdAt ?? new Date()
         this.updatedAt = updatedAt
         this.deletedAt = deletedAt
     }

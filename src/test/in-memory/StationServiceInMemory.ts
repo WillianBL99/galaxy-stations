@@ -1,4 +1,4 @@
-import { UUID } from "crypto";
+
 import { IStation } from "../../application/entity/Station";
 import { IStationService } from "../../application/service/IStationService";
 import { IPagination } from "../../utils/Type";
@@ -15,13 +15,13 @@ export class StationServiceInMemory implements IStationService {
     async list(pagination: IPagination): Promise<IStation[]> {
         return this.stations
     }
-    async getById(id: UUID): Promise<IStation | null> {
+    async getById(id: string): Promise<IStation | null> {
         return this.stations.find(station => station.id === id) || null
     }
     async getByName(name: string): Promise<IStation | null> {
         return this.stations.find(station => station.name === name) || null
     }
-    async listByPlanet(planetId: UUID, pagination: IPagination): Promise<IStation[]> {
+    async listByPlanet(planetId: pagination: IPagination): Promise<IStation[]> {
         return this.stations.filter(station => station.planetId === planetId) || null
     }
     async update(planet: IStation): Promise<IStation> {

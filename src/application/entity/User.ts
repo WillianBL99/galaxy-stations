@@ -1,25 +1,25 @@
-import { UUID, randomUUID } from "crypto"
+import { randomUUID } from "crypto"
 
 interface IUser extends IBase {
-    id: UUID
+    id: string
     name: string
     email: string
     password: string
 }
 
 interface UserData extends BaseData {
-    id?: UUID,
+    id?: string,
     name: string,
     email: string,
     password: string
 }
 
 class User implements IUser {
-    readonly id: UUID
+    readonly id: string
     name: string
     email: string
     password: string
-    cratedAt: Date
+    createdAt: Date
     updatedAt?: Date | undefined
     deletedAt?: Date | undefined
 
@@ -28,7 +28,7 @@ class User implements IUser {
         this.name = name
         this.email = email
         this.password = password
-        this.cratedAt = createdAt ?? new Date()
+        this.createdAt = createdAt ?? new Date()
         this.updatedAt = updatedAt
         this.deletedAt = deletedAt
     }

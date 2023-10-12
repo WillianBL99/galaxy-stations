@@ -11,7 +11,7 @@ export class PlanetServiceInMemory implements IPlanetService {
     async list(pagination: IPagination): Promise<IPlanet[]> {
         return this.planets
     }
-    async getById(id: UUID): Promise<IPlanet | null> {
+    async getById(id: string): Promise<IPlanet | null> {
         return this.planets.find(planet => planet.id === id) || null;
     }
     async getByName(name: string): Promise<IPlanet | null> {

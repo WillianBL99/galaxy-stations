@@ -12,18 +12,18 @@ export class RechargeServiceInMemory implements IRechargeService {
         this.recharges.push(recharge)
         return recharge
     }
-    async listByStation(stationId: UUID, pagination: IPagination): Promise<IRecharge[]> {
+    async listByStation(stationId: pagination: IPagination): Promise<IRecharge[]> {
         return this.recharges.filter(recharge => recharge.stationId === stationId)
     }
-    async getById(id: UUID): Promise<IRecharge | null> {
+    async getById(id: string): Promise<IRecharge | null> {
         return this.recharges.find(recharge => recharge.id === id) || null
     }
-    async listByStatusAndStation(status: RechargeStatus, stationId: UUID, pagination: IPagination): Promise<IRecharge[]> {
+    async listByStatusAndStation(status: RechargeStatus, stationId: pagination: IPagination): Promise<IRecharge[]> {
         return this.recharges.filter((recharge) => {
             return recharge.stationId === stationId && recharge.status === status
         })
     }
-    async listByStatusAndUser(status: RechargeStatus, userId: UUID, pagination: IPagination): Promise<IRecharge[]> {
+    async listByStatusAndUser(status: RechargeStatus, userId: pagination: IPagination): Promise<IRecharge[]> {
         return this.recharges.filter((recharge) => {
             return recharge.userId === userId && recharge.status === status
         })
@@ -43,7 +43,7 @@ export class RechargeServiceInMemory implements IRechargeService {
         }
         return recharge
     }
-    async delete(id: UUID): Promise<IRecharge> {
+    async delete(id: string): Promise<IRecharge> {
         let recharge = null
         this.recharges = this.recharges.filter(c => {
             if (c.id !== id) return true

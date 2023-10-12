@@ -6,7 +6,7 @@ import { UserServiceInMemory } from "../../test/in-memory/UserServiceInMemory"
 import { IAppConfig } from "../../config/Config"
 import { IUser } from "../entity/User"
 import { UserFactory } from "../../test/factory/UserFactory"
-import { UUID, randomUUID } from "crypto"
+import { randomUUID } from "crypto"
 import { IStation } from "../entity/Station"
 import { StationFactory } from "../../test/factory/StationFactory"
 import { appErrors } from "../../error/Errors"
@@ -25,7 +25,7 @@ class ProtectedMetods extends RechargeUseCase {
     static protectedParseRecharge(recharge: IRecharge) {
         return this.parseRecharge(recharge)
     }
-    protectedHandleConflict(recharge: IRecharge, stationId: UUID, userId: UUID, callback: () => void) {
+    protectedHandleConflict(recharge: IRecharge, stationId: string, userId: string, callback: () => void) {
         return this.handleReservationConflict(recharge, stationId, userId, callback)
     }
     static protectedIsAFutureTime(startTime: Date, endTime: Date) {

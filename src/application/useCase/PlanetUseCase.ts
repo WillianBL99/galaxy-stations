@@ -1,6 +1,5 @@
 import { IPlanetService } from "../service/IPlanetService";
 import { IPlanet } from "../entity/Planet";
-import { UUID } from "crypto";
 import { IPagination } from "../../utils/Type";
 import { appErrors } from "../../error/Errors";
 
@@ -13,9 +12,10 @@ export class PlanetUseCase {
         return {
             id: Planet.id,
             name: Planet.name,
-            checkedAt: Planet.checkedAt,
+            mass: Planet.mass,
             hasStation: Planet.hasStation,
-            cratedAt: Planet.cratedAt,
+            checkedAt: Planet.checkedAt,
+            createdAt: Planet.createdAt,
             updatedAt: Planet.updatedAt
         }
     }
@@ -33,7 +33,7 @@ export class PlanetUseCase {
         return planet
     }
 
-    async getById(id: UUID): Promise<PlanetResponse | null> {
+    async getById(id: string): Promise<PlanetResponse | null> {
         const planet = await this.planetService.getById(id)
         if (!planet) {
             throw new Error(appErrors.planetNotFound)
@@ -41,7 +41,7 @@ export class PlanetUseCase {
         return planet
     }
 
-    async updateHasStation(planetId: UUID, hasStation: boolean): Promise<PlanetResponse> {
+    async updateHasStation(planetId: string, hasStation: boolean): Promise<PlanetResponse> {
         const planet = await this.planetService.getById(planetId)
         if (!planet) {
             throw new Error(appErrors.planetNotFound)

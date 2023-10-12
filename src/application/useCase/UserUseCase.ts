@@ -1,7 +1,7 @@
 import { IUserService } from "../service/IUserService";
 import { IUser, UserData, User } from "../entity/User";
 import { hashSync } from "bcrypt"
-import { UUID } from "crypto";
+
 import { appErrors } from "../../error/Errors";
 import { IEncryptor } from "../../utils/Encryptor";
 
@@ -20,7 +20,7 @@ export class UserUseCase {
             id: user.id,
             name: user.name,
             email: user.email,
-            cratedAt: user.cratedAt,
+            createdAt: user.createdAt,
             updatedAt: user.updatedAt
         }
     }
@@ -54,7 +54,7 @@ export class UserUseCase {
         return UserUseCase.parseUser(updatedUser)
     }
 
-    async getById(id: UUID): Promise<UserResponse> {
+    async getById(id: string): Promise<UserResponse> {
         const userFounded = await this.userService.getById(id)
         if (!userFounded) {
             throw new Error(appErrors.userNotFound)

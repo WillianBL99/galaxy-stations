@@ -1,6 +1,6 @@
 import { IRechargeService } from "../service/IRechargeService";
 import { IRecharge, Recharge, RechargeData } from "../entity/Recharge";
-import { UUID } from "crypto";
+
 import { IStationService } from "../service/IStationService";
 import { IUserService } from "../service/IUserService";
 import { IPagination, Pagination } from "../../utils/Type";
@@ -28,12 +28,12 @@ export class RechargeUseCase {
             endTime: recharge.endTime,
             userId: recharge.userId,
             stationId: recharge.stationId,
-            cratedAt: recharge.cratedAt,
+            createdAt: recharge.createdAt,
             updatedAt: recharge.updatedAt
         }
     }
 
-    protected async handleReservationConflict(recharge: Recharge, stationId: UUID, userId: UUID, callback: () => any): Promise<void> {
+    protected async handleReservationConflict(recharge: Recharge, stationId: string, userId: string, callback: () => any): Promise<void> {
         if (!RechargeUseCase.isAFutureTime(recharge.startTime, recharge.endTime)) {
             await callback()
             throw new Error(appErrors.invalidEndTime)
@@ -113,7 +113,7 @@ export class RechargeUseCase {
         await this.stationService.update({ ...station, charging: false });
     }
 
-    async getById(id: UUID): Promise<RechargeResponse | null> {
+    async getById(id: string): Promise<RechargeResponse | null> {
         const recharge = await this.rechargeService.getById(id)
         if (!recharge) {
             throw new Error(appErrors.rechargeNotFound)
@@ -121,7 +121,7 @@ export class RechargeUseCase {
         return recharge
     }
 
-    async listByStation(stationId: UUID, pagination: IPagination): Promise<RechargeResponse[]> {
+    async listByStation(stationId: string, pagination: IPagination): Promise<RechargeResponse[]> {
         const status = "done"
         const recharge = await this.rechargeService.listByStatusAndStation(status, stationId, pagination)
         return recharge
