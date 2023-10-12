@@ -8,8 +8,8 @@ import { IAppConfig } from "../../config/Config";
 import { appErrors } from "../../error/Errors";
 import { IStation } from "../entity/Station";
 
-type CreateUserRequest = Pick<RechargeData, "endTime" | "stationId" | "userId">
-type RechargeResponse = Omit<IRecharge, "deletedAt">
+export type CreateRechargeRequest = Pick<RechargeData, "endTime" | "stationId" | "userId">
+export type RechargeResponse = Omit<IRecharge, "deletedAt">
 
 export class RechargeUseCase {
     constructor(
@@ -66,7 +66,7 @@ export class RechargeUseCase {
         });
     }
 
-    async recharge({ endTime, stationId, userId }: CreateUserRequest): Promise<RechargeResponse> {
+    async recharge({ endTime, stationId, userId }: CreateRechargeRequest): Promise<RechargeResponse> {
         const user = await this.userService.getById(userId)
         if (!user) {
             throw new Error(appErrors.userNotFound)

@@ -1,15 +1,15 @@
 import { Pagination } from "../../utils/Type";
 import { RechargeData } from "../entity/Recharge";
-import { RechargeUseCase } from "../useCase/RechargeUseCase";
+import { CreateRechargeRequest, RechargeResponse, RechargeUseCase } from "../useCase/RechargeUseCase";
 
 export interface IRechargeController {
-    suitableRecharges(pagination: Pagination): Promise<RechargeData[]>
+    recharge(data: CreateRechargeRequest): Promise<RechargeResponse>
 }
 
 export class RechargeController implements IRechargeController {
-    constructor(private readonly rechargeUseCase: RechargeUseCase) {}
+    constructor(private readonly rechargeUseCase: RechargeUseCase) { }
 
-    suitableRecharges(pagination: Pagination): Promise<RechargeData[]> {
-        return this.rechargeUseCase.list(pagination)
+    async recharge({ userId, stationId, endTime }: CreateRechargeRequest): Promise<RechargeResponse> {
+        return await this.rechargeUseCase.recharge({ userId, stationId, endTime })
     }
 }

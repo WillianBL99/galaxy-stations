@@ -5,9 +5,9 @@ import { hashSync } from "bcrypt"
 import { appErrors } from "../../error/Errors";
 import { IEncryptor } from "../../utils/Encryptor";
 
-type CreateUserRequest = Pick<UserData, "name" | "email" | "password">
-type UpdateUserRequest = Pick<IUser, "id" | "name" | "email">
-type UserResponse = Omit<IUser, "deletedAt" | "password">
+export type CreateUserRequest = Pick<UserData, "name" | "email" | "password">
+export type UpdateUserRequest = Pick<IUser, "id" | "name" | "email">
+export type UserResponse = Omit<IUser, "deletedAt" | "password">
 
 export class UserUseCase {
     constructor(
