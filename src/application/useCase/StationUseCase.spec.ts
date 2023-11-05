@@ -5,7 +5,7 @@ import { PlanetServiceInMemory } from "../../test/in-memory/PlanetServiceInMemor
 import { IPlanet } from "../entity/Planet";
 import { PlanetFactory } from "../../test/factory/PlanetFactory";
 import { StationFactory } from "../../test/factory/StationFactory";
-import { AppError } from "../../error/Errors";
+import { AppError } from "../../message/Errors";
 import { IStation } from "../entity/Station";
 import { Pagination } from "../../utils/Type";
 import { randomUUID } from "crypto";

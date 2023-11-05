@@ -25,6 +25,10 @@ type AuthPayload {
     user: UserLogin!
 }
 
+type Message {
+    message: String!
+}
+
 type User {
     id: ID!
     name: String!
@@ -108,7 +112,7 @@ type Query {
 
 type Mutation {
     installStation(input: InstallStationArgs): Station!
-    recharge(input: RechargeArgs): Recharge!
+    recharge(input: RechargeArgs): Message!
     register(input: RegisterArgs): User
     login(input: LoginArgs): AuthPayload!
     # reservation(input: ReservationArgs): ReservationId 

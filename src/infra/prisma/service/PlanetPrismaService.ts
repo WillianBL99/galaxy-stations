@@ -3,7 +3,7 @@ import { IPlanet } from "../../../application/entity/Planet";
 import { IPlanetService } from "../../../application/service/IPlanetService";
 import { IPagination } from "../../../utils/Type";
 import { Parsers } from "../../../utils/Parsers";
-import { AppError } from "../../../error/Errors";
+import { AppError } from "../../../message/Errors";
 
 
 export class PlanetPrismaService implements IPlanetService {
@@ -38,7 +38,7 @@ export class PlanetPrismaService implements IPlanetService {
             })
             return this.parserData(createdPlanet)
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({typeErr:"internalError", error})
         }
     }
 
@@ -55,7 +55,7 @@ export class PlanetPrismaService implements IPlanetService {
             })
             return this.parserData(createdPlanet)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }      
     }
 
@@ -75,7 +75,7 @@ export class PlanetPrismaService implements IPlanetService {
             }
             return null
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 
@@ -89,7 +89,7 @@ export class PlanetPrismaService implements IPlanetService {
             }
             return null
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 
@@ -105,7 +105,7 @@ export class PlanetPrismaService implements IPlanetService {
             })
             return this.parserData(updatedPlanet)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 

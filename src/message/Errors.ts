@@ -1,18 +1,7 @@
-type ErrorType = "Application" | "Service";
-type AppErrorType = {
-    [key: string]: { message: string; status: number, type: ErrorType };
-};
-export class CustomError extends Error {
-    status: number
-    constructor(message: string, status: number) {
-        super(message);
-        this.name = "CustomError";
-        this.status = status;
-    }
-}
+import { AppMessagesType } from "./Message"
 
 export class AppError {
-    static errors: AppErrorType = {
+    static errors: AppMessagesType = {
         userNotFound: { message: "User not found", status: 404, type: "Application" },
         emailOrPasswordAlreadyExists: { message: "Email or password already exists", status: 409, type: "Application" },
         emailOrPasswordNotFound: { message: "Email or password not found", status: 401, type: "Application" },
@@ -32,12 +21,14 @@ export class AppError {
         invalidOrExpiredToken: { message: "Token JWT is invalid or expired", status: 401, type: "Application" },
         someServiceError: { message: "Some service error", status: 500, type: "Service" },
         anotherServiceError: { message: "Another service error", status: 500, type: "Service" },
+        invalidDateTime: { message: "Invalid date time", status: 400, type: "Application" },
     };
 
-    static throw(errorCode: keyof typeof AppError.errors): never {
-        const error = AppError.errors[errorCode];
-        if (error) {
-            throw new Error(`${errorCode}`);
+    static throw({ typeErr, error }: { typeErr: keyof typeof AppError.errors, error?: any }): never {
+        const appErr = AppError.errors[typeErr];
+        console.log(error);
+        if (appErr) {
+            throw new Error(`${typeErr}`);
         } else {
             throw new Error("Unknown error");
         }

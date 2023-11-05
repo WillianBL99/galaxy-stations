@@ -3,7 +3,7 @@ import { IRecharge, RechargeStatus } from "../../../application/entity/Recharge"
 import { IRechargeService } from "../../../application/service/IRechargeService";
 import { IPagination, Pagination } from "../../../utils/Type";
 import { Parsers } from "../../../utils/Parsers";
-import { AppError } from "../../../error/Errors";
+import { AppError } from "../../../message/Errors";
 
 
 export class RechargePrismaService implements IRechargeService {
@@ -41,21 +41,21 @@ export class RechargePrismaService implements IRechargeService {
             })
             return this.parserData(created)
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({ typeErr: "internalError", error })
         }
     }
 
     async getById(id: string): Promise<IRecharge | null> {
         try {
             const recharge = await this.prisma.recharge.findFirst({
-                where: { AND: { id, deletedAt: undefined } },
+                where: { AND: { id, deletedAt: null } },
             })
             if (recharge) {
                 return this.parserData(recharge)
             }
             return null
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({ typeErr: "internalError", error })
         }
     }
 
@@ -63,12 +63,12 @@ export class RechargePrismaService implements IRechargeService {
         try {
             const pg = Parsers.paginationToPrisma(pagination)
             const stations = await this.prisma.recharge.findMany({
-                where: { AND: { stationId, deletedAt: undefined } },
+                where: { AND: { stationId, deletedAt: null } },
                 ...pg
             })
             return stations.map(this.parserData)
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({ typeErr: "internalError", error })
         }
     }
 
@@ -76,12 +76,12 @@ export class RechargePrismaService implements IRechargeService {
         try {
             const pg = Parsers.paginationToPrisma(pagination)
             const stations = await this.prisma.recharge.findMany({
-                where: { AND: { status, stationId, deletedAt: undefined } },
+                where: { AND: { status, stationId, deletedAt: null } },
                 ...pg
             })
             return stations.map(this.parserData)
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({ typeErr: "internalError", error })
         }
     }
 
@@ -89,12 +89,12 @@ export class RechargePrismaService implements IRechargeService {
         try {
             const pg = Parsers.paginationToPrisma(pagination)
             const stations = await this.prisma.recharge.findMany({
-                where: { AND: { status, userId, deletedAt: undefined } },
+                where: { AND: { status, userId, deletedAt: null } },
                 ...pg
             })
             return stations.map(this.parserData)
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({ typeErr: "internalError", error })
         }
     }
 
@@ -112,7 +112,7 @@ export class RechargePrismaService implements IRechargeService {
             })
             return this.parserData(updatedPlanet)
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({ typeErr: "internalError", error })
         }
     }
 
@@ -127,7 +127,7 @@ export class RechargePrismaService implements IRechargeService {
             })
             return this.parserData(updatedPlanet)
         } catch (error) {
-            AppError.throw("internalError")
+            AppError.throw({ typeErr: "internalError", error })
         }
     }
 }

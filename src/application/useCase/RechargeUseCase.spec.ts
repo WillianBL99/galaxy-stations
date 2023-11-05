@@ -9,15 +9,20 @@ import { UserFactory } from "../../test/factory/UserFactory"
 import { randomUUID } from "crypto"
 import { IStation } from "../entity/Station"
 import { StationFactory } from "../../test/factory/StationFactory"
-import { AppError } from "../../error/Errors"
+import { AppError } from "../../message/Errors"
 import { IRecharge, Recharge } from "../entity/Recharge"
 import { RechargeFactory } from "../../test/factory/RechargeFactory"
 import { Pagination } from "../../utils/Type"
+import { AppInfo } from "../../message/Info"
 
 class Config implements AppConfig {
     pricePerMinute: number
+    timeToUpdate: number
+    port: number
     constructor(pricePerMinute: number) {
         this.pricePerMinute = pricePerMinute
+        this.timeToUpdate = 1000
+        this.port = 3000
     }
 }
 
@@ -103,34 +108,35 @@ describe("Recharge use cases", () => {
                 station = StationFactory.getStation()
                 stationService.stations.push(station)
             })
-            it("should create a recharge when provided with a station and a valid datetime", async () => {
+            it("should return 'recharge in progress' when valid station and datetime are provided", async () => {
                 const expectedDuration = 50 // milliseconds
-                const endTime = new Date(new Date().getTime() + expectedDuration)
+                const startTime = new Date()
+                const endTime = new Date(startTime.getTime() + expectedDuration)
 
                 const result = await rechargeUseCase.recharge({
                     userId: user.id,
                     stationId: station.id,
                     endTime
                 })
-                expect(result.endTime.getTime()).to.be.equal(endTime.getTime())
-                expect(rechargeService.recharges).length(1)
+                const duration = Date.now() - startTime.getTime()
+
+                expect(result.message).to.equal(AppInfo.message.chargingInProgress?.message)
             })
-            it("should return a recharge in the time provided", async () => {
-                const expectedDuration = 50 // milliseconds
-                const maxLatency = 2 // milliseconds
-                const endTime = new Date(new Date().getTime() + expectedDuration)
+            it("should create a recharge when provided with a valid station and a valid datetime", async () => {
+                const maxLatency = 60 // milliseconds
+                const duration = 50 // milliseconds
+                const maxDuration = duration + maxLatency
+                const startTime = new Date()
+                const endTime = new Date(startTime.getTime() + duration)
 
-                const startTime = Date.now()
                 const result = await rechargeUseCase.recharge({
                     userId: user.id,
                     stationId: station.id,
                     endTime
                 })
-                const duration = Date.now() - startTime
+                await new Promise<void>((resolve) => setTimeout(() => resolve(), maxDuration))
 
-                expect(result.endTime.getTime()).to.be.equal(endTime.getTime())
-                expect(duration).to.greaterThanOrEqual(expectedDuration - 2)
-                expect(duration).to.lessThan(expectedDuration + maxLatency)
+                expect(result.message).to.equal(AppInfo.message.chargingInProgress?.message)
                 expect(rechargeService.recharges).length(1)
             })
             it("should not create a recharge when the station is not found", async () => {
@@ -177,7 +183,7 @@ describe("Recharge use cases", () => {
                     stationId: station.id,
                     endTime
                 })
-                expect(result.endTime).to.be.equal(endTime)
+                expect(result.message).to.be.equal(AppInfo.message.chargingInProgress?.message)
                 expect(rechargeService.recharges).length(2)
             })
             it("should not create a recharge when conflict with a reserved recharge", async () => {
@@ -211,13 +217,28 @@ describe("Recharge use cases", () => {
                 rechargeService.recharges.push({ ...recharge2, status: "charging" })
 
                 expect(await rechargeService.listByStatusAndUser("charging", user.id, new Pagination({ active: false }))).length(1)
-                
+
                 await expect(async () => {
                     const results = []
                     results.push(rechargeUseCase.recharge(recharge1))
                     results.push(rechargeUseCase.recharge(recharge2))
                     await Promise.all(results)
                 }).rejects.toThrow("UserAlreadyChargingASpacecraft")
+                expect(rechargeService.recharges).length(1)
+            })
+            it("should return an error when pass a invalid end time", async () => {
+                const expectedDuration = 50 // milliseconds
+                const startTime = new Date(new Date().getTime() - 1000)
+                const endTime = new Date(startTime.getTime() + expectedDuration)
+
+                await expect(async () => {
+                    await rechargeUseCase.recharge({
+                        userId: user.id,
+                        stationId: station.id,
+                        endTime
+                    })
+                }).rejects.toThrow("invalidEndTime")
+                expect(rechargeService.recharges).length(0)
             })
         })
         describe("getById", () => {
@@ -353,22 +374,6 @@ describe("Recharge use cases", () => {
                     await rechargeUseCase.protectedHandleConflict(recharge, station.id, user.id, callback)
                 }).rejects.toThrow("conflictTimeWithReservedCharge")
                 expect(callback).toBeCalledTimes(1)
-            })
-
-            it("should wait for the specified time and execute the callback", async () => {
-                const expectedDuration = 50 // milliseconds
-                const maxLatency = 2 // milliseconds
-                const endTime = new Date(new Date().getTime() + expectedDuration)
-                const recharge = RechargeFactory.getRecharge({ endTime })
-                const callback = vi.fn()
-
-                const startTime = Date.now()
-                await rechargeUseCase.protectedHandleConflict(recharge, station.id, user.id, callback)
-                const duration = Date.now() - startTime
-
-                expect(callback).toBeCalledTimes(0)
-                expect(duration).to.greaterThanOrEqual(expectedDuration)
-                expect(duration).to.lessThan(expectedDuration + maxLatency)
             })
         })
         describe("isAFutureTime", () => {

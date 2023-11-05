@@ -22,15 +22,15 @@ model Planet {
 }
 
 model Station {
-    id        String     @id
-    name      String     @unique
-    charging  Boolean
-    planetId  String
-    createdAt DateTime
-    updatedAt DateTime?
-    deletedAt DateTime?
-    planet    Planet     @relation(fields: [planetId], references: [id])
-    recharges Recharge[]
+    id          String     @id
+    name        String     @unique
+    charging    Boolean
+    planetId    String
+    createdAt   DateTime
+    updatedAt   DateTime?
+    deletedAt   DateTime?
+    planet      Planet     @relation(fields: [planetId], references: [id])
+    recharges   Recharge[]
 
     @@map("station")
 }

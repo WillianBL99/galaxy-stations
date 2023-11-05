@@ -3,7 +3,7 @@ import { IUserController } from '../../../application/controller/UserController'
 import { BaseContext } from '@apollo/server'
 import { IUser } from '../../../application/entity/User';
 import { AuthConfig } from '../../../config/Config';
-import { AppError } from '../../../error/Errors';
+import { AppError } from '../../../message/Errors';
 
 
 export type TokenResponse = {
@@ -19,24 +19,24 @@ export class AuthContext {
         const fullToken = token || "";
 
         if (!fullToken) {
-            AppError.throw("authenticationTokenRequired")
+            AppError.throw({typeErr: "authenticationTokenRequired"})
         }
 
         try {
             const [bearer, token] = fullToken.split(" ")
             if (bearer != "Bearer") {
-                AppError.throw("tokenNotDefinedCorrectly")
+                AppError.throw({typeErr: "tokenNotDefinedCorrectly"})
             }
             const authConfig = new AuthConfig()
             const decoded = jwt.verify(token, authConfig.jwtSecret) as { userId: string };
             const userId = decoded.userId
             const user = await this.userController.getById(userId)
             if (!user) {
-                AppError.throw("userNotLogged")
+                AppError.throw({typeErr: "userNotLogged"})
             }
             return { userId };
         } catch (error) {
-            AppError.throw("invalidOrExpiredToken")
+            AppError.throw({typeErr: "invalidOrExpiredToken"})
         }
     }
 }

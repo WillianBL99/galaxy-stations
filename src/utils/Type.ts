@@ -1,4 +1,4 @@
-import { AppError } from "../error/Errors"
+import { AppError } from "../message/Errors"
 
 export interface IPagination {
     offset: number
@@ -21,7 +21,7 @@ export class Pagination implements Pagination {
         this.offset = offset ?? 0
         this.page = page ?? 0
         if (this.page < 0) {
-            AppError.throw("invalidPageParameter")
+            AppError.throw({typeErr: "invalidPageParameter"})
         }
     }
 

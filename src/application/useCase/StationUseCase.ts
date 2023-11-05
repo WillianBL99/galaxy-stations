@@ -2,7 +2,7 @@ import { IPlanetService } from "../service/IPlanetService";
 import { IStationService } from "../service/IStationService";
 import { IStation, Station } from "../entity/Station";
 
-import { AppError, appErrors } from "../../error/Errors";
+import { AppError } from "../../message/Errors";
 import { IPagination } from "../../utils/Type";
 
 export type StationResponse = Omit<IStation, "deletedAt">
@@ -31,11 +31,11 @@ export class StationUseCase {
     async create({stationName, planetName}: CreateStationData): Promise<StationResponse> {
         let station = await this.stationService.getByName(stationName)
         if (station) {
-            AppError.throw("stationAlreadyExists")
+            AppError.throw({typeErr: "stationAlreadyExists"})
         }
         const planet = await this.planetService.getByName(planetName)
         if (!planet) {
-            AppError.throw("planetNotFound")
+            AppError.throw({typeErr: "planetNotFound"})
         }
         station = new Station({ name: stationName, planetId: planet.id })
         const stationResponse = await this.stationService.create(station)
@@ -55,7 +55,7 @@ export class StationUseCase {
     async getById(id: string): Promise<StationResponse | null> {
         const station = await this.stationService.getById(id)
         if (!station) {
-            AppError.throw("stationNotFound")
+            AppError.throw({typeErr: "stationNotFound"})
         }
         return station
     }

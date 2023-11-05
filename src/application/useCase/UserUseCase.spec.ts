@@ -3,7 +3,7 @@ import { beforeEach, describe, it } from "vitest";
 import { UserServiceInMemory } from "../../test/in-memory/UserServiceInMemory";
 import { UserUseCase } from "./UserUseCase";
 import { expect } from "vitest";
-import { AppError, appErrors } from "../../error/Errors";
+import { AppError, appErrors } from "../../message/Errors";
 import { IEncryptor } from "../../utils/Encryptor";
 
 class Encryptor implements IEncryptor {

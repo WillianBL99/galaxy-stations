@@ -1,7 +1,7 @@
 import { IPlanetService } from "../service/IPlanetService";
 import { IPlanet } from "../entity/Planet";
 import { IPagination } from "../../utils/Type";
-import { AppError } from "../../error/Errors";
+import { AppError } from "../../message/Errors";
 
 type PlanetResponse = Omit<IPlanet, "deletedAt">
 
@@ -28,7 +28,7 @@ export class PlanetUseCase {
     async getByName(name: string): Promise<PlanetResponse | null> {
         const planet = await this.planetService.getByName(name)
         if (!planet) {
-            AppError.throw("planetNotFound")
+            AppError.throw({typeErr: "planetNotFound"})
         }
         return planet
     }
@@ -36,7 +36,7 @@ export class PlanetUseCase {
     async getById(id: string): Promise<PlanetResponse | null> {
         const planet = await this.planetService.getById(id)
         if (!planet) {
-            AppError.throw("planetNotFound")
+            AppError.throw({typeErr: "planetNotFound"})
         }
         return planet
     }
@@ -44,7 +44,7 @@ export class PlanetUseCase {
     async updateHasStation(planetId: string, hasStation: boolean): Promise<PlanetResponse> {
         const planet = await this.planetService.getById(planetId)
         if (!planet) {
-            AppError.throw("planetNotFound")
+            AppError.throw({typeErr: "planetNotFound"})
         }
         const planetResponse = await this.planetService.update({
             ...planet,

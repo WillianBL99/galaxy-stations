@@ -4,7 +4,7 @@ import { PlanetFactory } from "../../test/factory/PlanetFactory";
 import { Pagination } from "../../utils/Type";
 import { randomUUID } from "crypto";
 import { PlanetUseCase } from "./PlanetUseCase";
-import { AppError } from "../../error/Errors";
+import { AppError } from "../../message/Errors";
 import { IPlanet } from "../entity/Planet";
 
 class ProtectedMetods extends PlanetUseCase {

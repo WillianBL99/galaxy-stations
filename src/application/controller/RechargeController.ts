@@ -1,9 +1,10 @@
+import { AppMessageType } from "../../message/Message";
 import { Pagination } from "../../utils/Type";
 import { RechargeData } from "../entity/Recharge";
 import { CreateRechargeRequest, RechargeResponse, RechargeUseCase } from "../useCase/RechargeUseCase";
 
 export interface IRechargeController {
-    recharge(data: CreateRechargeRequest): Promise<RechargeResponse>
+    recharge(data: CreateRechargeRequest): Promise<AppMessageType>
     listByStation(stationId: string, pagination: Pagination): Promise<RechargeResponse[]>
 }
 
@@ -14,7 +15,7 @@ export class RechargeController implements IRechargeController {
         return await this.rechargeUseCase.listByStation(stationId, pagination)
     }
 
-    async recharge({ userId, stationId, endTime }: CreateRechargeRequest): Promise<RechargeResponse> {
+    async recharge({ userId, stationId, endTime }: CreateRechargeRequest): Promise<AppMessageType> {
         return await this.rechargeUseCase.recharge({ userId, stationId, endTime })
     }
 }

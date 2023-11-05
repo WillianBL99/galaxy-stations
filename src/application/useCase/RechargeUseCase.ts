@@ -5,8 +5,10 @@ import { IStationService } from "../service/IStationService";
 import { IUserService } from "../service/IUserService";
 import { IPagination, Pagination } from "../../utils/Type";
 import { AppConfig } from "../../config/Config";
-import { AppError } from "../../error/Errors";
+import { AppError } from "../../message/Errors";
 import { IStation } from "../entity/Station";
+import { AppMessageType } from "../../message/Message";
+import { AppInfo } from "../../message/Info";
 
 export type CreateRechargeRequest = Pick<RechargeData, "endTime" | "stationId" | "userId">
 export type RechargeResponse = Omit<IRecharge, "deletedAt">
@@ -36,20 +38,15 @@ export class RechargeUseCase {
     protected async handleReservationConflict(recharge: Recharge, stationId: string, userId: string, callback: () => any): Promise<void> {
         if (!RechargeUseCase.isAFutureTime(recharge.startTime, recharge.endTime)) {
             await callback()
-            AppError.throw("invalidEndTime")
+            AppError.throw({typeErr: "invalidEndTime"})
         }
         const pagination = new Pagination({ active: false })
-
-
         const reservedRecharges = await this.rechargeService.listByStatusAndStation("reserved", stationId, pagination)
 
         if (this.conflictWithAnotherReservation(reservedRecharges, recharge.startTime, recharge.endTime)) {
             await callback()
-            AppError.throw("conflictTimeWithReservedCharge")
+            AppError.throw({typeErr: "conflictTimeWithReservedCharge"})
         }
-
-        const spendTime = recharge.endTime.getTime() - recharge.startTime.getTime()
-        await new Promise((resolve) => setTimeout(resolve, spendTime))
     }
 
     protected static isAFutureTime(startTime: Date, endTime: Date): boolean {
@@ -66,22 +63,22 @@ export class RechargeUseCase {
         });
     }
 
-    async recharge({ endTime, stationId, userId }: CreateRechargeRequest): Promise<RechargeResponse> {
+    async recharge({ endTime, stationId, userId }: CreateRechargeRequest): Promise<AppMessageType> {
         const user = await this.userService.getById(userId)
         if (!user) {
-            AppError.throw("userNotFound")
+            AppError.throw({typeErr: "userNotFound"})
         }
         const station = await this.stationService.getById(stationId)
         if (!station) {
-            AppError.throw("stationNotFound")
+            AppError.throw({typeErr: "stationNotFound"})
         }
         const usersSpacecraftCharging = await this.rechargeService
             .listByStatusAndUser("charging", userId, new Pagination({ active: false }))
         if (usersSpacecraftCharging.length) {
-            AppError.throw("UserAlreadyChargingASpacecraft")
+            AppError.throw({typeErr: "UserAlreadyChargingASpacecraft"})
         }
 
-        this.reserveStationForCharging(station)
+        this.handleReserverStation(station)
         const recharge = new Recharge({
             userId,
             stationId,
@@ -90,34 +87,35 @@ export class RechargeUseCase {
             endTime: new Date(endTime),
             pricePerMinute: this.appConfig.pricePerMinute,
         })
-        
         await this.rechargeService.create(recharge)
         const revert = () => {
-            this.releaseStationFromCharging(station)
+            this.stationService.update({ ...station, charging: false });
             this.rechargeService.delete(recharge.id)
         }
         await this.handleReservationConflict(recharge, stationId, userId, revert)
-
-        const rechargeResponse = await this.rechargeService.update({ ...recharge, status: "done" })
-        await this.releaseStationFromCharging(station)
-        return RechargeUseCase.parseRecharge(rechargeResponse)
+        this.whenFinishedDefineItAsDone(station, recharge)
+        return AppInfo.get("chargingInProgress")
     }
 
-    protected reserveStationForCharging(station: IStation): void {
+    whenFinishedDefineItAsDone(station: IStation, recharge: IRecharge) {
+        const spentTime = recharge.endTime.getTime() - new Date().getTime()
+        setTimeout(() => {
+            this.stationService.update({ ...station, charging: false })
+            this.rechargeService.update({ ...recharge, status: "done" })
+        }, spentTime);
+    }
+
+    protected handleReserverStation(station: IStation): void {
         if (station.charging) {
-            AppError.throw("stationIsAlreadyCharging")
+            AppError.throw({typeErr: "stationIsAlreadyCharging"})
         }
         this.stationService.update({ ...station, charging: true });
-    }
-
-    protected async releaseStationFromCharging(station: IStation): Promise<void> {
-        await this.stationService.update({ ...station, charging: false });
     }
 
     async getById(id: string): Promise<RechargeResponse | null> {
         const recharge = await this.rechargeService.getById(id)
         if (!recharge) {
-            AppError.throw("rechargeNotFound")
+            AppError.throw({typeErr: "rechargeNotFound"})
         }
         return recharge
     }

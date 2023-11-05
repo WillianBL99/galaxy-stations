@@ -3,7 +3,7 @@ import { IStation } from "../../../application/entity/Station";
 import { IStationService } from "../../../application/service/IStationService";
 import { IPagination } from "../../../utils/Type";
 import { Parsers } from "../../../utils/Parsers";
-import { AppError } from "../../../error/Errors";
+import { AppError } from "../../../message/Errors";
 
 
 export class StationPrismaService implements IStationService {
@@ -36,7 +36,7 @@ export class StationPrismaService implements IStationService {
             })
             return this.parserData(created)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
     async list(pagination: IPagination): Promise<IStation[]> {
@@ -45,7 +45,7 @@ export class StationPrismaService implements IStationService {
             const stations = await this.prisma.station.findMany(pg)
             return stations.map(this.parserData)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
     async getById(id: string): Promise<IStation | null> {
@@ -58,7 +58,7 @@ export class StationPrismaService implements IStationService {
             }
             return null
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
     async getByName(name: string): Promise<IStation | null> {
@@ -71,7 +71,7 @@ export class StationPrismaService implements IStationService {
             }
             return null
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
     async listByPlanet(planetId: string, pagination: IPagination): Promise<IStation[]> {
@@ -82,7 +82,7 @@ export class StationPrismaService implements IStationService {
             })
             return stations.map(this.parserData)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
     async update(station: IStation): Promise<IStation> {
@@ -98,7 +98,7 @@ export class StationPrismaService implements IStationService {
             })
             return this.parserData(updatedPlanet)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 

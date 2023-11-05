@@ -1,7 +1,7 @@
 import { User, PrismaClient } from "@prisma/client";
 import { IUser } from "../../../application/entity/User";
 import { IUserService } from "../../../application/service/IUserService";
-import { AppError } from "../../../error/Errors";
+import { AppError } from "../../../message/Errors";
 
 
 export class UserPrismaService implements IUserService {
@@ -34,7 +34,7 @@ export class UserPrismaService implements IUserService {
             })
             return this.parserData(createdUser)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 
@@ -48,7 +48,7 @@ export class UserPrismaService implements IUserService {
             }
             return null
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 
@@ -62,7 +62,7 @@ export class UserPrismaService implements IUserService {
             }
             return null
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 
@@ -79,7 +79,7 @@ export class UserPrismaService implements IUserService {
             })
             return this.parserData(updatedPlanet)
         } catch (error) {
-            AppError.throw("internalError")
+             AppError.throw({typeErr:"internalError", error})
         }
     }
 }

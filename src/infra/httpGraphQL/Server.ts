@@ -6,11 +6,12 @@ import { Resolvers } from "./resolvers"
 import { App } from "../../application"
 import { IUser } from "../../application/entity/User"
 import { AuthContext } from "./context/AuthContext"
-import { AppError } from "../../error/Errors"
+import { AppError } from "../../message/Errors"
 
 export type MyContext = {
     headers: {
         authorization: string,
+        timezone: string
     },
     user: Omit<IUser, "password">
 };

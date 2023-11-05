@@ -1,6 +1,7 @@
 import { AppController } from "../../../application/controller";
 import { CreateRechargeRequest } from "../../../application/useCase/RechargeUseCase";
 import { CreateUserRequest } from "../../../application/useCase/UserUseCase";
+import { HandleDate } from "../../../utils/HandleDate";
 import { MyContext } from "../Server";
 import { AuthContext } from "../context/AuthContext";
 
@@ -11,7 +12,7 @@ type InstallStationInput = {
     }
 }
 
-type RechargeInput = { input: Omit<CreateRechargeRequest, "userId"> }
+type RechargeInput = { input: { endTime: string, stationId: string } }
 type RegisterInput = { input: CreateUserRequest }
 type LoginInput = { input: Omit<CreateUserRequest, "name"> }
 
@@ -43,13 +44,13 @@ export class MutationResolver {
     private recharge = async (_: any, args: RechargeInput, context: MyContext) => {
         const data = await this.auth.validateToken(context?.headers?.authorization)
         const { stationId, endTime } = args.input
-        const recharge = await this.appController.recharge.recharge({
+        const success = await this.appController.recharge.recharge({
             userId: data.userId,
             stationId,
-            endTime,
+            endTime: HandleDate.convertToUTC(endTime, context.headers.timezone)
         })
-        
-        return recharge
+
+        return { message: success.message }
     }
 
     content() {
