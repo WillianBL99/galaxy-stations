@@ -17,7 +17,7 @@ export class AppError {
         reservationAlreadyUsed: { message: "Reservation already used", status: 409, type: "Application" },
         reservationIsBeingUsed: { message: "Reservation is being used", status: 409, type: "Application" },
         reservationExpired: { message: "Reservation expired", status: 410, type: "Application" },
-        scheduledChargingStartsAfterReservationTime: { message: "Charging is scheduled and can only start after the reservation start time", status: 400, type: "Application" },
+        scheduledChargingStartsAfterReservationTime: { message: "Charging is scheduled and can only start after the reservation start time", status: 412, type: "Application" },
         internalError: { message: "Internal error", status: 500, type: "Application" },
         invalidPageParameter: { message: "Page should be greater or equal to 0", status: 400, type: "Application" },
         authenticationTokenRequired: { message: "Authentication token is required", status: 401, type: "Application" },
