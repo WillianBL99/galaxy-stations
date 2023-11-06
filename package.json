@@ -5,13 +5,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "setZone": "sudo timedatectl set-timezone America/Bahia",
-    "start": "prisma generate && prisma migrate deploy && node ./dist/index.cjs",
+    "start:develop": "prisma generate && prisma migrate deploy && node ./dist/index.cjs",
     "start:dev": "tsx watch src/index.ts",
     "build": "tsup src/index.ts",
     "test": "vitest",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate deploy",
+    "prisma:studio": "npx prisma studio",
     "coverage": "vitest --coverage"
   },
   "author": "Paulo Uilian",
