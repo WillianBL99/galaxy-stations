@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/WillianBL99/repo-provas">
-      <img src="https://github.com/WillianBL99/gopher-todo_list/assets/65803142/fc32a68b-929e-4849-8f66-d5d875f5456f" width="180" >
+      <img src="https://github.com/WillianBL99/galaxy-stations/assets/65803142/b40a970c-f86f-45a0-9cb8-0de1e31f47c2" width="180" >
     </a>
     <h1 align="center">
       Galax Stations
@@ -81,8 +81,8 @@ Run the docker-compose.
      $ ./prisma_studio.sh
 ```
 
-## :twisted_rightwards_arrows: Routes available in the API
-Above are the routes available in the API. For more details, see the documentation available at [gopher-todolist.onrender.com](https://gopher-todolist.onrender.com/).
+## :twisted_rightwards_arrows: Queries and Mutations available in the API
+- 🚧 Documentation is in progress.
 
 ## :page_facing_up: License
 This project is under the [MIT License](https://github.com/WillianBL99/gopher-todo_list/blob/main/LICENSE)
