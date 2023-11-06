@@ -28,17 +28,18 @@ export class StationUseCase {
         }
     }
 
-    async create({stationName, planetName}: CreateStationData): Promise<StationResponse> {
+    async create({ stationName, planetName }: CreateStationData): Promise<StationResponse> {
         let station = await this.stationService.getByName(stationName)
         if (station) {
-            AppError.throw({typeErr: "stationAlreadyExists"})
+            AppError.throw({ typeErr: "stationAlreadyExists" })
         }
         const planet = await this.planetService.getByName(planetName)
         if (!planet) {
-            AppError.throw({typeErr: "planetNotFound"})
+            AppError.throw({ typeErr: "planetNotFound" })
         }
         station = new Station({ name: stationName, planetId: planet.id })
         const stationResponse = await this.stationService.create(station)
+        this.planetService.update({ ...planet, hasStation: true })
         return StationUseCase.parseStation(stationResponse)
     }
 
@@ -55,7 +56,7 @@ export class StationUseCase {
     async getById(id: string): Promise<StationResponse | null> {
         const station = await this.stationService.getById(id)
         if (!station) {
-            AppError.throw({typeErr: "stationNotFound"})
+            AppError.throw({ typeErr: "stationNotFound" })
         }
         return station
     }

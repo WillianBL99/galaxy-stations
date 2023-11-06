@@ -49,6 +49,7 @@ type Planet {
     checkedAt: String!
     createdAt: String!
     updatedAt: String
+    stations: [Station!]!
 }
 
 # Station

@@ -15,6 +15,9 @@ export interface IStationController {
     history(stationId: string, pagination: Pagination): Promise<StationHistory[]>
 }
 export class StationController implements IStationController {
+    async listByPlanet(planetId: string, pagination: Pagination) {
+        return await this.stationUseCase.listByPlanet(planetId, pagination)
+    }
     constructor(
         private readonly stationUseCase: StationUseCase,
         private readonly rechargeUseCase: RechargeUseCase
@@ -23,7 +26,7 @@ export class StationController implements IStationController {
     async create({ stationName, planetName }: CreateStationData): Promise<StationData> {
         return await this.stationUseCase.create({ planetName, stationName });
     }
-    
+
     async suitableStations(pagination: Pagination): Promise<StationData[]> {
         return this.stationUseCase.list(pagination)
     }
