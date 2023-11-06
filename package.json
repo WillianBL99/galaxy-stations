@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start:develop": "prisma generate && prisma migrate deploy && node ./dist/index.cjs",
-    "start:dev": "tsx watch src/index.ts",
+    "start:local": "tsx watch src/index.ts",
     "build": "tsup src/index.ts",
     "test": "vitest",
     "prisma:generate": "npx prisma generate",

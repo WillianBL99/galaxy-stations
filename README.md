@@ -49,7 +49,7 @@ The project was developed using the following technologies:
 4. Run the API
 
       ```bash
-      $ npm run start:dev
+      $ npm run start:local
       ```
 
 The API will display `Apollo Server running on port <port>` if everything is correct.
@@ -67,7 +67,7 @@ The API will display `Apollo Server running on port <port>` if everything is cor
 #### Up system
 Run the docker-compose.
 ```bash
-     $ docker-compose up
+     $ docker-compose -f docker-compose.develop.yaml up --build
 ```
 
 #### Observe bank data with Prisma Studio
