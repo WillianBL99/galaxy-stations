@@ -1,5 +1,4 @@
 import { AppController } from "../../../application/controller";
-import { CreateRechargeRequest } from "../../../application/useCase/RechargeUseCase";
 import { CreateUserRequest } from "../../../application/useCase/UserUseCase";
 import { AppError } from "../../../message/Errors";
 import { HandleDate } from "../../../utils/HandleDate";
@@ -84,7 +83,7 @@ export class MutationResolver {
             login: this.login,
             installStation: this.installStation,
             recharge: this.recharge,
-            reservation: this.reservation
+            reservation: this.reservation,
         }
     }
 }

@@ -13,7 +13,7 @@ export class AppController {
 
     constructor(private readonly appUseCase: AppUseCase) {
         this.planet = new PlanetController(appUseCase.planet)
-        this.station = new StationController(appUseCase.station)
+        this.station = new StationController(appUseCase.station, appUseCase.recharge)
         this.recharge = new RechargeController(appUseCase.recharge)
         this.user = new UserController(appUseCase.user)
     }

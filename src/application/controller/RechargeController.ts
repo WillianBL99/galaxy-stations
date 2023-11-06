@@ -7,7 +7,6 @@ export interface IRechargeController {
     recharge(data: CreateRechargeRequest): Promise<AppMessageType>
     reserve(data: CreateReserveRequest): Promise<ReserveResponse>
     rechargeReserve(data: RechargeReservationRequest): Promise<AppMessageType>
-    listByStation(stationId: string, pagination: Pagination): Promise<RechargeResponse[]>
 }
 
 export class RechargeController implements IRechargeController {
@@ -23,9 +22,4 @@ export class RechargeController implements IRechargeController {
     async rechargeReserve({ reservationId }: RechargeReservationRequest): Promise<AppMessageType> {
         return await this.rechargeUseCase.rechargeReserve({ reservationId })
     }
-
-    async listByStation(stationId: string, pagination: Pagination): Promise<RechargeResponse[]> {
-        return await this.rechargeUseCase.listByStation(stationId, pagination)
-    }
-
 }

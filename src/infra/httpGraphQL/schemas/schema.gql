@@ -34,7 +34,6 @@ type User {
     id: ID!
     name: String!
     email: String!
-    password: String!
     checkedAt: String!
     createdAt: String!
     updatedAt: String
@@ -69,11 +68,12 @@ type Station {
     # planet: Planet!
 }
 
-# type StationHistory {
-#     time: String,
-#     duration: String,
-#     user: User!
-# }
+type StationHistory {
+    startTime: String!,
+    duration: String!,
+    userId: String!,
+    user: User!
+}
 
 # Recharge
 
@@ -117,7 +117,7 @@ input ReservationArgs {
 type Query {
     suitablePlanets(pagination: PaginationArgs ): [Planet!]!
     stations(pagination: PaginationArgs ): [Station!]!
-    stationHistory(pagination: PaginationArgs, stationId: String!): [Recharge!]!
+    stationHistory(pagination: PaginationArgs, stationId: String!): [StationHistory!]!
 }
 
 # Mutations

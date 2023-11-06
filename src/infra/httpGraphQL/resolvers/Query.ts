@@ -1,5 +1,6 @@
 import { AppController } from "../../../application/controller";
 import { IPagination, Pagination } from "../../../utils/Type";
+import { StationHistoryResolver } from "./StationHistory";
 
 type GQLPagination = {
     pagination: Omit<IPagination, "active">
@@ -31,7 +32,7 @@ export class QueryResolver {
         if (page >= 0) {
             pg.activate(page, offset)
         }
-        return this.appController.recharge.listByStation(stationId, pg)
+        return this.appController.station.history(stationId, pg)
     }
 
     content() {
