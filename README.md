@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/WillianBL99/repo-provas">
-      <img src="https://github.com/WillianBL99/gopher-todo_list/assets/65803142/fc32a68b-929e-4849-8f66-d5d875f5456f" width="180" >
+      <img src="https://github.com/WillianBL99/galaxy-stations/assets/65803142/b40a970c-f86f-45a0-9cb8-0de1e31f47c2" width="180" >
     </a>
     <h1 align="center">
       Galax Stations
