@@ -81,8 +81,8 @@ Run the docker-compose.
      $ ./prisma_studio.sh
 ```
 
-## :twisted_rightwards_arrows: Routes available in the API
-Above are the routes available in the API. For more details, see the documentation available at [gopher-todolist.onrender.com](https://gopher-todolist.onrender.com/).
+## :twisted_rightwards_arrows: Queries and Mutations available in the API
+- 🚧 Documentation is in progress.
 
 ## :page_facing_up: License
 This project is under the [MIT License](https://github.com/WillianBL99/gopher-todo_list/blob/main/LICENSE)
