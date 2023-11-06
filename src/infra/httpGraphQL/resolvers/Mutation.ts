@@ -1,6 +1,7 @@
 import { AppController } from "../../../application/controller";
 import { CreateRechargeRequest } from "../../../application/useCase/RechargeUseCase";
 import { CreateUserRequest } from "../../../application/useCase/UserUseCase";
+import { AppError } from "../../../message/Errors";
 import { HandleDate } from "../../../utils/HandleDate";
 import { MyContext } from "../Server";
 import { AuthContext } from "../context/AuthContext";
@@ -12,7 +13,7 @@ type InstallStationInput = {
     }
 }
 
-type RechargeInput = { input: { endTime: string, stationId: string } }
+type RechargeInput = { input: { endTime: string, stationId: string, reservationId: string } }
 type ReserveInput = { input: { startTime: string, endTime: string, stationId: string } }
 type RegisterInput = { input: CreateUserRequest }
 type LoginInput = { input: Omit<CreateUserRequest, "name"> }
@@ -45,14 +46,22 @@ export class MutationResolver {
     private recharge = async (_: any, args: RechargeInput, context: MyContext) => {
         const data = await this.auth.validateToken(context?.headers?.authorization)
         const timezone = context?.headers?.timezone
-        const { stationId, endTime } = args.input
-        const success = await this.appController.recharge.recharge({
-            userId: data.userId,
-            stationId,
-            endTime: HandleDate.convertToUTC(endTime, timezone)
-        })
+        const { stationId, endTime, reservationId } = args.input
+        if (reservationId) {
+            const result = await this.appController.recharge.rechargeReserve({ reservationId })
+            return { message: result.message }
+        }
 
-        return { message: success.message }
+        if (stationId && endTime) {
+            const result = await this.appController.recharge.recharge({
+                userId: data.userId,
+                stationId,
+                endTime: HandleDate.convertToUTC(endTime, timezone)
+            })
+            return { message: result.message }
+        }
+
+        AppError.throw({typeErr: "invalidRechargeRequest"})
     }
 
     private reservation = async (_: any, args: ReserveInput, context: MyContext) => {

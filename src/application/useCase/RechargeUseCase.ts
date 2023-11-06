@@ -12,6 +12,7 @@ import { AppInfo } from "../../message/Info";
 
 export type CreateRechargeRequest = Pick<RechargeData, "endTime" | "stationId" | "userId">
 export type CreateReserveRequest = Pick<RechargeData, "startTime" | "endTime" | "stationId" | "userId">
+export type RechargeReservationRequest = { reservationId: string }
 export type RechargeResponse = Omit<IRecharge, "deletedAt">
 export type ReserveResponse = { reservationId: string }
 
@@ -52,6 +53,33 @@ export class RechargeUseCase {
         await this.handleReservationConflict(recharge, stationId, userId, () => { })
         await this.rechargeService.create(recharge)
         return { reservationId: recharge.id }
+    }
+
+    async rechargeReserve({ reservationId }: RechargeReservationRequest): Promise<AppMessageType> {
+        const recharge = await this.rechargeService.getById(reservationId)
+        if (!recharge) {
+            AppError.throw({ typeErr: "rechargeNotFound" })
+        }
+        if (recharge.status === "done") {
+            AppError.throw({ typeErr: "reservationAlreadyUsed" })
+        }
+        if (recharge.status === "charging") {
+            AppError.throw({ typeErr: "reservationIsBeingUsed" })
+        }
+        const startTime = new Date()
+        if (startTime < recharge.startTime) {
+            AppError.throw({ typeErr: "scheduledChargingStartsAfterReservationTime" })
+        }
+        if (startTime >= recharge.endTime) {
+            AppError.throw({ typeErr: "reservationExpired" })
+        }
+        const spentTime = recharge.endTime.getTime() - startTime.getTime()
+        setTimeout(() => {
+            this.rechargeService.update({ ...recharge, status: "done", startTime })
+        }, spentTime);
+        
+        await this.rechargeService.update({ ...recharge, status: "charging" })
+        return AppInfo.get("chargingInProgress")
     }
 
     async recharge({ endTime, stationId, userId }: CreateRechargeRequest): Promise<AppMessageType> {

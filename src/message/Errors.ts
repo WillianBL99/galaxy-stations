@@ -14,6 +14,10 @@ export class AppError {
         conflictTimeWithReservedCharge: { message: "Conflict time with reserved charge", status: 409, type: "Application" },
         UserAlreadyChargingASpacecraft: { message: "User is already charging a spacecraft", status: 409, type: "Application" },
         rechargeNotFound: { message: "Recharge not found", status: 404, type: "Application" },
+        reservationAlreadyUsed: { message: "Reservation already used", status: 409, type: "Application" },
+        reservationIsBeingUsed: { message: "Reservation is being used", status: 409, type: "Application" },
+        reservationExpired: { message: "Reservation expired", status: 410, type: "Application" },
+        scheduledChargingStartsAfterReservationTime: { message: "Charging is scheduled and can only start after the reservation start time", status: 400, type: "Application" },
         internalError: { message: "Internal error", status: 500, type: "Application" },
         invalidPageParameter: { message: "Page should be greater or equal to 0", status: 400, type: "Application" },
         authenticationTokenRequired: { message: "Authentication token is required", status: 401, type: "Application" },
@@ -23,6 +27,7 @@ export class AppError {
         someServiceError: { message: "Some service error", status: 500, type: "Service" },
         anotherServiceError: { message: "Another service error", status: 500, type: "Service" },
         invalidDateTime: { message: "Invalid date time", status: 400, type: "Application" },
+        invalidRechargeRequest: { message: "Invalid recharge request", status: 400, type: "Application" },
     };
 
     static throw({ typeErr, error }: { typeErr: keyof typeof AppError.errors, error?: any }): never {

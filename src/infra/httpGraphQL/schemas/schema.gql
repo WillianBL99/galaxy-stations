@@ -78,8 +78,8 @@ type Station {
 # Recharge
 
 input RechargeArgs {
-    stationId: String!
-    endTime: String!
+    stationId: String
+    endTime: String
     reservationId: String
 }
 
@@ -127,5 +127,5 @@ type Mutation {
     recharge(input: RechargeArgs): Message!
     register(input: RegisterArgs): User
     login(input: LoginArgs): AuthPayload!
-    reservation(input: ReservationArgs): Reservation 
+    reservation(input: ReservationArgs): Reservation!
 }

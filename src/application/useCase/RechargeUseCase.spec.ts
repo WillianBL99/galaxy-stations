@@ -228,6 +228,151 @@ describe("Recharge use cases", () => {
                 expect(rechargeService.recharges).length(0)
             })
         })
+
+        describe("rechargeReserve", () => {
+            let rechargeService: RechargeServiceInMemory
+            let stationService: StationServiceInMemory
+            let rechargeUseCase: RechargeUseCase
+            let appConfig: AppConfig
+            let station: IStation
+            beforeEach(() => {
+                rechargeService = new RechargeServiceInMemory()
+                stationService = new StationServiceInMemory()
+                const pricePerMinute = 4
+                appConfig = new Config(pricePerMinute)
+                rechargeUseCase = new RechargeUseCase(
+                    rechargeService,
+                    stationService,
+                    userService,
+                    appConfig
+                )
+                station = StationFactory.getStation()
+                stationService.stations.push(station)
+            })
+            it("should return 'rechargeNotFound' error if the recharge does not exist", async () => {
+                const recharge = RechargeFactory.getRecharge()
+
+                await expect(async () => {
+                    await rechargeUseCase.rechargeReserve({
+                        reservationId: recharge.id
+                    })
+                }).rejects.toThrow("rechargeNotFound")
+                expect(rechargeService.recharges).length(0)
+            });
+
+            it("should return 'reservationAlreadyUsed' error if the recharge status is 'done'", async () => {
+                const expectedDuration = 50 // milliseconds
+                const startTime = new Date()
+                const endTime = new Date(startTime.getTime() + expectedDuration)
+                const recharge = RechargeFactory.getRecharge({
+                    endTime,
+                    startTime,
+                    userId: user.id,
+                    stationId: station.id,
+                    status: "done"
+                })
+                rechargeService.recharges.push(recharge)
+
+                await expect(async () => {
+                    await rechargeUseCase.rechargeReserve({
+                        reservationId: recharge.id
+                    })
+                }).rejects.toThrow("reservationAlreadyUsed")
+                expect(rechargeService.recharges).length(1)
+                expect(rechargeService.recharges[0].status).to.equals("done")
+            });
+
+            it("should return 'reservationIsBeingUsed' error if the recharge status is 'charging'", async () => {
+                const expectedDuration = 50 // milliseconds
+                const startTime = new Date()
+                const endTime = new Date(startTime.getTime() + expectedDuration)
+                const recharge = RechargeFactory.getRecharge({
+                    endTime,
+                    startTime,
+                    userId: user.id,
+                    stationId: station.id,
+                    status: "charging"
+                })
+                rechargeService.recharges.push(recharge)
+
+                await expect(async () => {
+                    await rechargeUseCase.rechargeReserve({
+                        reservationId: recharge.id
+                    })
+                }).rejects.toThrow("reservationIsBeingUsed")
+                expect(rechargeService.recharges).length(1)
+                expect(rechargeService.recharges[0].status).to.equals("charging")
+            });
+
+            it("should return 'reservationExpired' error if the recharge endTime is in the past", async () => {
+                const expectedDuration = 50 // milliseconds
+                const startTime = new Date(new Date().getTime() - 3 * expectedDuration)
+                const endTime = new Date(startTime.getTime() + expectedDuration)
+                const recharge = RechargeFactory.getRecharge({
+                    endTime,
+                    startTime,
+                    userId: user.id,
+                    stationId: station.id,
+                    status: "charging"
+                })
+                rechargeService.recharges.push(recharge)
+
+                await expect(async () => {
+                    await rechargeUseCase.rechargeReserve({
+                        reservationId: recharge.id
+                    })
+                }).rejects.toThrow("reservationIsBeingUsed")
+                expect(rechargeService.recharges).length(1)
+                expect(rechargeService.recharges[0].status).to.equals("charging")
+            });
+
+            it("should successfully update the recharge status to 'done' and set startTime after the specified time interval", async () => {
+                const expectedDuration = 50; // milliseconds
+                const startTime = new Date();
+                const endTime = new Date(startTime.getTime() + expectedDuration);
+                const recharge = RechargeFactory.getRecharge({
+                    endTime,
+                    startTime,
+                    userId: user.id,
+                    stationId: station.id,
+                    status: "reserved"
+                });
+                rechargeService.recharges.push(recharge);
+                await new Promise((resolve) => setTimeout(resolve, expectedDuration / 2));
+
+                await rechargeUseCase.rechargeReserve({
+                    reservationId: recharge.id
+                });
+                await new Promise((resolve) => setTimeout(resolve, expectedDuration));
+
+                expect(rechargeService.recharges).toHaveLength(1);
+                expect(rechargeService.recharges[0].status).toBe("done");
+                expect(rechargeService.recharges[0].startTime).not.toBeNull();
+                expect(rechargeService.recharges[0].startTime).to.be.greaterThan(startTime)
+            });
+
+            it("should have startTime within the reservation time interval", async () => {
+                const expectedDuration = 50 // milliseconds
+                const startTime = new Date(new Date().getTime() + expectedDuration)
+                const endTime = new Date(startTime.getTime() + expectedDuration)
+                const recharge = RechargeFactory.getRecharge({
+                    endTime,
+                    startTime,
+                    userId: user.id,
+                    stationId: station.id,
+                    status: "reserved"
+                })
+                rechargeService.recharges.push(recharge)
+
+                await expect(async () => {
+                    await rechargeUseCase.rechargeReserve({
+                        reservationId: recharge.id
+                    })
+                }).rejects.toThrow("scheduledChargingStartsAfterReservationTime")
+                expect(rechargeService.recharges).length(1)
+                expect(rechargeService.recharges[0].status).to.equals("reserved")});
+
+        })
         describe("recharge", () => {
             let rechargeService: RechargeServiceInMemory
             let stationService: StationServiceInMemory
