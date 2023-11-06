@@ -10,6 +10,7 @@ export class AppError {
         stationAlreadyExists: { message: "Station already exists", status: 409, type: "Application" },
         stationIsAlreadyCharging: { message: "Station is already charging, come back later", status: 409, type: "Application" },
         invalidEndTime: { message: "Invalid end time", status: 400, type: "Application" },
+        invalidTimeInterval: { message: "Invalid time interval", status: 400, type: "Application" },
         conflictTimeWithReservedCharge: { message: "Conflict time with reserved charge", status: 409, type: "Application" },
         UserAlreadyChargingASpacecraft: { message: "User is already charging a spacecraft", status: 409, type: "Application" },
         rechargeNotFound: { message: "Recharge not found", status: 404, type: "Application" },
@@ -26,7 +27,7 @@ export class AppError {
 
     static throw({ typeErr, error }: { typeErr: keyof typeof AppError.errors, error?: any }): never {
         const appErr = AppError.errors[typeErr];
-        console.log(error);
+        if (error) console.log(error);
         if (appErr) {
             throw new Error(`${typeErr}`);
         } else {

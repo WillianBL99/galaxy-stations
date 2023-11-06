@@ -1,8 +1,13 @@
+type Message {
+    message: String!
+}
 
 input PaginationArgs {
     page: Int = -1
     offset: Int = 10
 }
+
+# User
 
 input RegisterArgs {
     name: String!
@@ -25,10 +30,6 @@ type AuthPayload {
     user: UserLogin!
 }
 
-type Message {
-    message: String!
-}
-
 type User {
     id: ID!
     name: String!
@@ -39,6 +40,8 @@ type User {
     updatedAt: String
 }
 
+# Planet
+
 type Planet {
     id: ID!
     name: String!
@@ -48,6 +51,8 @@ type Planet {
     createdAt: String!
     updatedAt: String
 }
+
+# Station
 
 input InstallStationArgs {
     name: String!
@@ -70,9 +75,12 @@ type Station {
 #     user: User!
 # }
 
+# Recharge
+
 input RechargeArgs {
     stationId: String!
     endTime: String!
+    reservationId: String
 }
 
 enum RechargeStatus {
@@ -93,27 +101,31 @@ type Recharge {
     updatedAt: String
 }
 
+type Reservation {
+    reservationId: String
+}
+
+input ReservationArgs {
+    stationId: String!
+    userId: String!
+    startTime: String!
+    endTime: String!
+}
+
+# Queries
+
 type Query {
     suitablePlanets(pagination: PaginationArgs ): [Planet!]!
     stations(pagination: PaginationArgs ): [Station!]!
     stationHistory(pagination: PaginationArgs, stationId: String!): [Recharge!]!
 }
 
-# type Reservation {
-#     reservationId: String
-# }
-
-# input ReservationArgs {
-#     stationId: String!
-#     userId: String!
-#     startTime: String!
-#     endTime: String!
-# }
+# Mutations
 
 type Mutation {
     installStation(input: InstallStationArgs): Station!
     recharge(input: RechargeArgs): Message!
     register(input: RegisterArgs): User
     login(input: LoginArgs): AuthPayload!
-    # reservation(input: ReservationArgs): ReservationId 
+    reservation(input: ReservationArgs): Reservation 
 }

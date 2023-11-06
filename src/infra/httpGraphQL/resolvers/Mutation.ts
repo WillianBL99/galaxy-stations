@@ -13,6 +13,7 @@ type InstallStationInput = {
 }
 
 type RechargeInput = { input: { endTime: string, stationId: string } }
+type ReserveInput = { input: { startTime: string, endTime: string, stationId: string } }
 type RegisterInput = { input: CreateUserRequest }
 type LoginInput = { input: Omit<CreateUserRequest, "name"> }
 
@@ -43,14 +44,29 @@ export class MutationResolver {
 
     private recharge = async (_: any, args: RechargeInput, context: MyContext) => {
         const data = await this.auth.validateToken(context?.headers?.authorization)
+        const timezone = context?.headers?.timezone
         const { stationId, endTime } = args.input
         const success = await this.appController.recharge.recharge({
             userId: data.userId,
             stationId,
-            endTime: HandleDate.convertToUTC(endTime, context.headers.timezone)
+            endTime: HandleDate.convertToUTC(endTime, timezone)
         })
 
         return { message: success.message }
+    }
+
+    private reservation = async (_: any, args: ReserveInput, context: MyContext) => {
+        const data = await this.auth.validateToken(context?.headers?.authorization)
+        const timezone = context?.headers?.timezone
+        const { stationId, startTime, endTime } = args.input
+        const result = await this.appController.recharge.reserve({
+            stationId,
+            userId: data.userId,
+            startTime: HandleDate.convertToUTC(startTime, timezone),
+            endTime: HandleDate.convertToUTC(endTime, timezone)
+        })
+
+        return result
     }
 
     content() {
@@ -58,7 +74,8 @@ export class MutationResolver {
             register: this.register,
             login: this.login,
             installStation: this.installStation,
-            recharge: this.recharge
+            recharge: this.recharge,
+            reservation: this.reservation
         }
     }
 }

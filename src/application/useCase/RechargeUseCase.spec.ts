@@ -64,13 +64,24 @@ describe("Recharge use cases", () => {
             station = StationFactory.getStation()
             stationService.stations.push(station)
         })
+        it("reserve", async () => {
+            const expectedDuration = 50 // milliseconds
+            const startTime = new Date()
+            startTime.setHours(startTime.getHours() + 1)
+            const endTime = new Date(startTime.getTime() + expectedDuration)
+
+            await expect(async () => {
+                await rechargeUseCase.recharge({
+                    userId: randomUUID(),
+                    stationId: station.id,
+                    endTime
+                })
+            }).rejects.toThrow("userNotFound")
+        })
         it("recharge", async () => {
             const expectedDuration = 1000 // milliseconds
             const endTime = new Date(new Date().getTime() + expectedDuration)
 
-            const call = async () => {
-
-            }
             await expect(async () => {
                 await rechargeUseCase.recharge({
                     userId: randomUUID(),
@@ -87,6 +98,135 @@ describe("Recharge use cases", () => {
             userService = new UserServiceInMemory()
             user = UserFactory.getUser()
             userService.users.push(user)
+        })
+        describe("reserve", () => {
+            let rechargeService: RechargeServiceInMemory
+            let stationService: StationServiceInMemory
+            let rechargeUseCase: RechargeUseCase
+            let appConfig: AppConfig
+            let station: IStation
+            beforeEach(() => {
+                rechargeService = new RechargeServiceInMemory()
+                stationService = new StationServiceInMemory()
+                const pricePerMinute = 4
+                appConfig = new Config(pricePerMinute)
+                rechargeUseCase = new RechargeUseCase(
+                    rechargeService,
+                    stationService,
+                    userService,
+                    appConfig
+                )
+                station = StationFactory.getStation()
+                stationService.stations.push(station)
+            })
+            it("should return 'recharge reserved' when valid data are provided", async () => {
+                const expectedDuration = 50 // milliseconds
+                const startTime = new Date()
+                startTime.setHours(startTime.getHours() + 1)
+                const endTime = new Date(startTime.getTime() + expectedDuration)
+
+                const result = await rechargeUseCase.reserve({
+                    userId: user.id,
+                    stationId: station.id,
+                    startTime,
+                    endTime
+                })
+
+                expect(result.reservationId).toBeDefined()
+                expect(rechargeService.recharges).length(1)
+                expect(rechargeService.recharges[0].status).to.equal("reserved")
+            })
+            it("should not create a reserve when the station is not found", async () => {
+                const expectedDuration = 50 // milliseconds
+                const startTime = new Date()
+                startTime.setHours(startTime.getHours() + 1)
+                const endTime = new Date(startTime.getTime() + expectedDuration)
+
+                await expect(async () => {
+                    await rechargeUseCase.reserve({
+                        userId: user.id,
+                        stationId: randomUUID(),
+                        startTime,
+                        endTime
+                    })
+                }).rejects.toThrow("stationNotFound")
+                expect(rechargeService.recharges).length(0)
+            })
+            it("should not create a reserve when the user is already charging a spacecraft in the provided interval", async () => {
+                const expectedDuration = 100 // milliseconds
+                let startTime = new Date()
+                let endTime = new Date(startTime.getTime() + expectedDuration)
+                await rechargeUseCase.recharge({
+                    endTime,
+                    stationId: station.id,
+                    userId: user.id,
+                })
+
+                startTime = new Date(startTime.getTime() + expectedDuration / 2)
+                endTime = new Date(startTime.getTime() + expectedDuration)
+
+                await expect(async () => {
+                    await rechargeUseCase.reserve({
+                        userId: user.id,
+                        stationId: station.id,
+                        startTime,
+                        endTime
+                    })
+                }).rejects.toThrow("UserAlreadyChargingASpacecraft")
+                expect(rechargeService.recharges).length(1)
+            })
+            it("should not create a reserve when the station is already charging in the provided interval", async () => {
+                const expectedDuration = 100 // milliseconds
+                let startTime = new Date()
+                let endTime = new Date(startTime.getTime() + expectedDuration)
+                await rechargeUseCase.recharge({
+                    endTime,
+                    stationId: station.id,
+                    userId: user.id,
+                })
+                const newUser = UserFactory.getUser()
+                userService.users.push(newUser)
+                startTime = new Date(startTime.getTime() + expectedDuration / 2)
+                endTime = new Date(startTime.getTime() + expectedDuration)
+
+                await expect(async () => {
+                    await rechargeUseCase.reserve({
+                        userId: newUser.id,
+                        stationId: station.id,
+                        startTime,
+                        endTime
+                    })
+                }).rejects.toThrow("conflictTimeWithReservedCharge")
+                expect(rechargeService.recharges).length(1)
+            })
+            it("should return an error when pass a invalid start time", async () => {
+                const startTime = new Date(new Date().getTime() - 100)
+                const endTime = new Date(startTime.getTime() + 100 * 2)
+
+                await expect(async () => {
+                    await rechargeUseCase.reserve({
+                        userId: user.id,
+                        stationId: station.id,
+                        startTime,
+                        endTime
+                    })
+                }).rejects.toThrow("invalidEndTime")
+                expect(rechargeService.recharges).length(0)
+            })
+            it("should return an error when pass a invalid end time", async () => {
+                const startTime = new Date(new Date().getTime())
+                const endTime = new Date(startTime.getTime() - 100)
+
+                await expect(async () => {
+                    await rechargeUseCase.reserve({
+                        userId: user.id,
+                        stationId: station.id,
+                        startTime,
+                        endTime
+                    })
+                }).rejects.toThrow("invalidEndTime")
+                expect(rechargeService.recharges).length(0)
+            })
         })
         describe("recharge", () => {
             let rechargeService: RechargeServiceInMemory
@@ -343,20 +483,6 @@ describe("Recharge use cases", () => {
                 station = StationFactory.getStation()
                 stationService.stations.push(station)
             })
-            it("should throw an error for invalid end time and execute the callback", async () => {
-                const startTime = Date.now()
-                const recharge = RechargeFactory.getRecharge({
-                    startTime: new Date(startTime),
-                    endTime: new Date(startTime - 1)
-                })
-                const callback = vi.fn()
-
-                await expect(async () => {
-                    await rechargeUseCase.protectedHandleConflict(recharge, station.id, user.id, callback)
-                }).rejects.toThrow("invalidEndTime")
-                expect(callback).toBeCalledTimes(1)
-            })
-
             it("should throw an error for time conflict with reserved charge and execute the callback", async () => {
                 const startTime = Date.now()
                 const reservedRecharge = RechargeFactory.getRecharge({
@@ -380,21 +506,21 @@ describe("Recharge use cases", () => {
             it("should return true for endTime later than startTime", () => {
                 const startTime = new Date();
                 const endTime = new Date(startTime.getTime() + 10);
-                const result = ProtectedMetods.protectedIsAFutureTime(startTime, endTime);
+                const result = ProtectedMetods.protectedIsAFutureTime(endTime, startTime);
                 expect(result).toBe(true);
             });
 
             it("should return false for endTime equal to startTime", () => {
                 const startTime = new Date();
                 const endTime = startTime;
-                const result = ProtectedMetods.protectedIsAFutureTime(startTime, endTime);
+                const result = ProtectedMetods.protectedIsAFutureTime(endTime, startTime);
                 expect(result).toBe(false);
             });
 
             it("should return false for endTime earlier than startTime", () => {
                 const startTime = new Date();
                 const endTime = new Date(startTime.getTime() - 10);
-                const result = ProtectedMetods.protectedIsAFutureTime(startTime, endTime);
+                const result = ProtectedMetods.protectedIsAFutureTime(endTime, startTime);
                 expect(result).toBe(false);
             });
         })
